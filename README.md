@@ -32,6 +32,6 @@
 </ul>
 
 ## 3) CSV format
-[Title],[alias1],[alias2],[alias3],[alias4],[...]
-[Comment]
-[String1],[String2],[String3],[...]
+<p>[Title],[alias1],[alias2],[alias3],[alias4],[...]</p>
+<p>[Comment]</p>
+<p>[String1],[String2],[String3],[...]</p>
