@@ -30,3 +30,8 @@
 <li>List all Titles</li>
 <li>List strings from a given Title</li>
 </ul>
+
+## 3) CSV format
+[Title],[alias1],[alias2],[alias3],[alias4],[...]
+[Comment]
+[String1],[String2],[String3],[...]
