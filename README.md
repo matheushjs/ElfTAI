@@ -2,7 +2,7 @@
 
 # Motivation
 <p>Consider the following situation: you have a big set of documents to read, each of which are labeled with the area of knowledge they cover (psychology, mathematics etc). Also, each document has it's ID number.</p>
-<p>The Elf TAS program will try to build a generic command-line manager for such situations, where the following are TRUE:</p>
+<p>The Elf TAI program will try to build a generic command-line manager for such situations, where the following are TRUE:</p>
 <ul>
 <li>There exists a big set of items (documents in this case), and we want to record which of these items have been processed (in this case, read).</li>
 <li>There exists a reduced number of titles (labels, in this case), where each title characterizes a set of items.</li>
