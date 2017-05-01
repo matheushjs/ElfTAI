@@ -23,9 +23,18 @@ class TitleNode:
     def __ge__(self,other): return self.title.lower() >= other.title.lower()
 
     def add_alias(self, alias):
-        pass
+        """Adds given 'alias' as an alias to this Node.
+        Returns False if it already existed."""
+        if not isinstance(alias, str):
+            raise TypeError
+        if alias.lower() in self.alias:
+            return False
+        self.alias.add(alias.lower())
+        return True
 
     def rm_alias(self, alias):
+        """Removes given 'alias' from this Node.
+        Returns True if an alias was removed
         pass
 
     def has_alias(self, alias):
