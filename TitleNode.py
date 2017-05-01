@@ -43,6 +43,7 @@ class TitleNode:
         return True
 
     def has_alias(self, alias):
+        """Checks if this Node contains alias 'alias'"""
         if not isinstance(alias, str):
             raise TypeError
         if alias.lower() in self.alias:
