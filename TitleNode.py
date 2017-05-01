@@ -45,6 +45,10 @@ class TitleNode:
             return True
         return False
 
+    def get_alias(self):
+        """Returns a list with all aliases of this Node"""
+        return [i for i in self.alias]
+
     def set_comment(self, comment):
         pass
 
