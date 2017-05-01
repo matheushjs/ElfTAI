@@ -34,11 +34,20 @@ class TitleNode:
 
     def rm_alias(self, alias):
         """Removes given 'alias' from this Node.
-        Returns True if an alias was removed
-        pass
+        Returns True if it existed and was successfully removed"""
+        if not isinstance(alias, str):
+            raise TypeError
+        if not alias.lower() in self.alias:
+            return False
+        self.alias.remove(alias.lower())
+        return True
 
     def has_alias(self, alias):
-        pass
+        if not isinstance(alias, str):
+            raise TypeError
+        if alias.lower() in self.alias:
+            return True
+        return False
 
     def set_comment(self, comment):
         pass
