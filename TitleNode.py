@@ -1,9 +1,4 @@
-import sys
 import csv
-
-def die(string):
-    print(string)
-    sys.exit(1)
 
 class TitleNode:
     """This class will represent a single Title, and handle Title-specific queries.
