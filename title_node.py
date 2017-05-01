@@ -12,7 +12,7 @@ class TitleNode:
         self.title = title
         self.alias = set([])
         self.comment = ""
-        self.strings = []
+        self.items = []
 
     # TitleNodes will be compared by their titles.
     def __eq__(self,other): return self.title.lower() == other.title.lower()
@@ -34,13 +34,13 @@ class TitleNode:
     def set_comment(self, comment):
         pass
 
-    def add_string(self, string):
+    def add_item(self, item):
         pass
 
-    def has_string(self, string):
+    def has_item(self, item):
         pass
 
-    def rm_string(self, string):
+    def rm_item(self, item):
         pass
 
     def write_to_csv(self, writer):
