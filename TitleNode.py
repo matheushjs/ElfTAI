@@ -50,7 +50,13 @@ class TitleNode:
         return [i for i in self.alias]
 
     def set_comment(self, comment):
-        pass
+        """Changes current comment of this Node.
+        Returns the old comment."""
+        if not isinstance(alias, str):
+            raise TypeError
+        temp = self.comment
+        self.comment = comment
+        return temp
 
     def add_item(self, item):
         pass
