@@ -3,7 +3,7 @@ import csv
 class TitleNode:
     """This class will represent a single Title, and handle Title-specific queries.
     Inner data: [Title, Aliases, Comment, Strings]"""
-    def __init__(self, title):
+    def __init__(self, title=""):
         self.title = title
         self.alias = set([])
         self.comment = ""
