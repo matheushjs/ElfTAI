@@ -116,7 +116,7 @@ class TitleNode:
 
     def read_from_csv(self, reader):
         """Reads a Node from a csv file, overwriting the current Node.
-        Returns True if reading was successful. False if end-of-file was reached"""
+        Returns self if reading was successful. None if end-of-file was reached"""
         try:
             l = next(reader)
             self.title = l[0]
@@ -126,9 +126,9 @@ class TitleNode:
             self.comment = l[0]
             l = next(reader)
             self.items = [i for i in l]
-            return True
+            return self
         except StopIteration:
-            return False
+            return None
 
 
 if __name__ == "__main__":
