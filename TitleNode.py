@@ -100,9 +100,13 @@ class TitleNode:
             self.items.pop(idx)
             return True
 
-    def get_items(self):
-        """Returns a list with all items of this Node, ordered ascendantly by time added."""
-        return self.items
+    def get_items(self, howmany=-1):
+        """Returns a list with the last 'howmany' items added to this Node.
+        If 'howmany' is negative, returns all items."""
+        if howmany < 0:
+            return self.items
+        else:
+            return [i for i in self.items[-howmany:]]
 
     def write_to_csv(self, writer):
         """Appends this Node to the csv file"""
@@ -134,6 +138,11 @@ if __name__ == "__main__":
         print(i)
     tn.add_item("1134")
     tn.add_item("1135")
+    tn.add_item("1136")
+    tn.add_item("1137")
+    tn.add_item("1138")
+    tn.add_item("1139")
+    tn.add_item("1139")
     tn.rm_item("2")
     tn.rm_item("1134")
     tn.rm_alias("math")
@@ -141,7 +150,7 @@ if __name__ == "__main__":
     for i in tn.get_alias():
         print(i)
     print(tn.get_comment())
-    for i in tn.get_items():
+    for i in tn.get_items(4):
         print(i)
 
 
