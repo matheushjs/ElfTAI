@@ -111,7 +111,8 @@ class TitleNode:
         writer.writerows([title_row, [self.comment,], self.items])
 
     def read_from_csv(self, reader):
-        """Reads a Node from a csv file, overwriting the current Node."""
+        """Reads a Node from a csv file, overwriting the current Node.
+        Returns True if reading was successful. False if end-of-file was reached"""
         try:
             l = next(reader)
             self.title = l[0]
