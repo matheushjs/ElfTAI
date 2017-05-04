@@ -100,11 +100,30 @@ class TitleNode:
             self.items.pop(idx)
             return True
 
+    def get_items(self):
+        """Returns a list with all items of this Node, ordered ascendantly by time added."""
+        return self.items
+
     def write_to_csv(self, writer):
-        pass
+        """Appends this Node to the csv file"""
+        title_row = [self.title,]
+        title_row.extend(self.alias)
+        writer.writerows([title_row, [self.comment,], self.items])
 
     def read_from_csv(self, reader):
-        pass
+        """Reads a Node from a csv file, overwriting the current Node."""
+        try:
+            l = next(reader)
+            self.title = l[0]
+            for i in range(1, len(l)):
+                self.alias.add(l[i])
+            l = next(reader)
+            self.comment = l[0]
+            l = next(reader)
+            self.items = [i for i in l]
+            return True
+        except StopIteration:
+            return False
 
 
 if __name__ == "__main__":
@@ -121,3 +140,13 @@ if __name__ == "__main__":
     for i in tn.get_alias():
         print(i)
     print(tn.get_comment())
+    for i in tn.get_items():
+        print(i)
+
+
+    with open("test_out.csv", "w") as fp:
+        tn.write_to_csv(csv.writer(fp))
+
+    with open("test_out.csv") as fp:
+        rd = csv.reader(fp)
+        tn.read_from_csv(rd)
