@@ -40,6 +40,11 @@ class TitleManager:
         for node in self.nodes:
             TitleManager.print_node_asLine(node, 40)
 
+    def print_full(self):
+        """Prints all information about all nodes."""
+        for node in self.nodes:
+            TitleManager.print_node_asBlock(node)
+
     def read_from_csv(self, path):
         """Reads all TitleNodes on a csv file, and store them internally."""
         if not isinstance(path, str):
@@ -85,6 +90,30 @@ class TitleManager:
             )
         )
 
+    @staticmethod
+    def print_node_asBlock(node, length=-1):
+        """Prints a TitleNode as a block, with all information wanted"""
+        title = node.get_title()
+        alias = node.get_alias()
+        comm = node.get_comment()
+        items = node.get_items(length)
+
+        print(
+            tc.colored("{name} - '{comment}'".format(
+                name = title,
+                comment = comm
+            ),
+            'magenta',
+            attrs=['bold'])
+        )
+
+        if len(items) == 0:
+            print(tc.colored("Empty", 'white', attrs=['bold', 'dark']))
+        else:
+            print(tc.colored(', '.join([ str(i) for i in items]), 'white', attrs=['bold', 'dark']))
+
+
 if __name__ == "__main__":
     with TitleManager("test.csv", "test_out.csv") as tm:
         tm.print_summary()
+        tm.print_full()
