@@ -17,6 +17,9 @@ class TitleNode:
     def __gt__(self,other): return self.title.lower() > other.title.lower()
     def __ge__(self,other): return self.title.lower() >= other.title.lower()
 
+    def get_title(self):
+        return self.title
+
     def has_alias(self, alias):
         """Checks if this Node contains alias 'alias'"""
         if not isinstance(alias, str):

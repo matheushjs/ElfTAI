@@ -9,8 +9,27 @@ class TitleManager:
     2) Apply to the Nodes in memory whatever the user of this Object asks for.
     3) Saves the processed list of Nodes in a csv file."""
     
-    def __init__(self):
+    def __init__(self, filename, bkfile=None):
         self.nodes = []
+        self.filename = filename
+        self.bkfile = bkfile
+        self.read_from_csv(filename)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.finalize()
+
+    def finalize(self):
+        if self.bkfile:
+            self.write_to_csv(self.filename, self.bkfile)
+        else:
+            self.write_to_csv(self.filename)
+
+    def print_summary(self):
+        for node in self.nodes:
+            TitleManager.print_node_asLine(node, 40)
 
     def read_from_csv(self, path):
         """Reads all TitleNodes on a csv file, and store them internally."""
@@ -21,17 +40,17 @@ class TitleManager:
             rd = csv.reader(fp)
             while True:
                 node = TitleNode().read_from_csv(rd)
-                if not node: break
+                if not node: break #read failed
                 self.nodes.append(node)
 
-    def write_to_csv(self, path, bkpath=""):
+    def write_to_csv(self, path, bkpath=None):
         """Writes all TitleNodes to the csv file.
         If 'bkpath' is given, backup the main file before overwriting it."""
         if not isinstance(path, str):
             raise TypeError
 
         # Saves a backup before overwriting the main file.
-        if bkpath != "":
+        if bkpath:
             with open(path, 'r') as infile, open(bkpath, 'w') as outfile:
                 outfile.write(infile.read())
 
@@ -40,8 +59,22 @@ class TitleManager:
             for node in self.nodes:
                 node.write_to_csv(wr)
 
+    @classmethod
+    def print_node_asLine(cls, node, width=-1):
+        if not isinstance(node, TitleNode):
+            raise TypeError
+
+        title = node.get_title()
+        alias = node.get_alias()
+        if width == -1:
+            width = 0
+
+        print("{name} ({alias})".format(
+                name=tc.colored(title.center(width), 'cyan', attrs=['bold', 'dark']),
+                alias=tc.colored(','.join(alias), color='yellow')
+            )
+        )
 
 if __name__ == "__main__":
-    tm = TitleManager()
-    tm.read_from_csv("test.csv")
-    tm.write_to_csv("test_out.csv")
+    with TitleManager("test.csv", "test_out.csv") as tm:
+        tm.print_summary()
