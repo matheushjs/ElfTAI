@@ -68,8 +68,8 @@ class TitleManager:
             for node in self.nodes:
                 node.write_to_csv(wr)
 
-    @classmethod
-    def print_node_asLine(cls, node, width=-1):
+    @staticmethod
+    def print_node_asLine(node, width=-1):
         """Prints a TitleNode in a line, with colors"""
         if not isinstance(node, TitleNode):
             raise TypeError
