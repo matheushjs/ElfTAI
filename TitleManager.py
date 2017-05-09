@@ -10,24 +10,33 @@ class TitleManager:
     3) Saves the processed list of Nodes in a csv file."""
     
     def __init__(self, filename, bkfile=None):
+        """
+        nodes: list of existent nodes
+        filename: name of file from which to read all nodes
+        bkfile: name of file to which backup all nodes"""
+
         self.nodes = []
         self.filename = filename
         self.bkfile = bkfile
         self.read_from_csv(filename)
 
     def __enter__(self):
+        """For use in 'with' statements"""
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
+        """For use in 'with' statements"""
         self.finalize()
 
     def finalize(self):
+        """Makes a backup and saves all nodes"""
         if self.bkfile:
             self.write_to_csv(self.filename, self.bkfile)
         else:
             self.write_to_csv(self.filename)
 
     def print_summary(self):
+        """Prints nodes, one per line, colored"""
         for node in self.nodes:
             TitleManager.print_node_asLine(node, 40)
 
@@ -61,6 +70,7 @@ class TitleManager:
 
     @classmethod
     def print_node_asLine(cls, node, width=-1):
+        """Prints a TitleNode in a line, with colors"""
         if not isinstance(node, TitleNode):
             raise TypeError
 
