@@ -45,6 +45,19 @@ class TitleManager:
         for node in self.nodes:
             TitleManager.print_node_asBlock(node)
 
+    def find_node_byName(self, string):
+        """Given a string, attemps to find the node with alias or title
+        that is equivalent to the string. Comparison made case-insensitive and
+        ignoring blank characters"""
+        string = string.strip().lower()
+        for node in self.nodes:
+            l = []
+            l.append(node.get_title().strip().lower())
+            l.extend([i.strip().lower() for i in node.get_alias()]) 
+            if string in l:
+                return node
+        return None
+
     def read_from_csv(self, path):
         """Reads all TitleNodes on a csv file, and store them internally."""
         if not isinstance(path, str):
@@ -117,3 +130,4 @@ if __name__ == "__main__":
     with TitleManager("test.csv", "test_out.csv") as tm:
         tm.print_summary()
         tm.print_full()
+        tm.print_node_asBlock(tm.find_node_byName("math"))
