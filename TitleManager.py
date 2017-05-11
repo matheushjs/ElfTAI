@@ -40,10 +40,15 @@ class TitleManager:
         for node in self.nodes:
             TitleManager.print_node_asLine(node, 40)
 
-    def print_full(self):
-        """Prints all information about all nodes."""
-        for node in self.nodes:
+    def print_full(self, string=None):
+        """Prints all information about nodes.
+        If 'string' is given, prints only the node identified by it."""
+        if string is not None:
+            node = self.find_node_byName(string)
             TitleManager.print_node_asBlock(node)
+        else:
+            for node in self.nodes:
+                TitleManager.print_node_asBlock(node)
 
     def find_node_byName(self, string):
         """Given a string, attemps to find the node with alias or title
@@ -57,6 +62,41 @@ class TitleManager:
             if string in l:
                 return node
         return None
+
+    def add_node(self, string, aliases=None):
+        #Don't forget to previously check existence of that node.
+        pass
+
+    def rm_node(self, string):
+        pass
+
+    def add_alias(self, string, alias):
+        pass
+
+    def rm_alias(self, alias):
+        pass
+
+    def set_comment(self, comm):
+        pass
+
+    def add_comment(self, comm):
+        #Consider making it possible to add multiple comments, as in a csv
+        #Or just append... but that's shitty
+        #If we did as suggested above, comments could be indexed and removed by index
+        pass
+
+    def erase_comment(self, comm):
+        pass
+    
+    def add_item(self, item):
+        pass
+
+    def rm_item(self, item):
+        pass
+
+    def find_item(self, item):
+        #return a list of nodes that contain item
+        pass
 
     def read_from_csv(self, path):
         """Reads all TitleNodes on a csv file, and store them internally."""
