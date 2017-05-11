@@ -126,7 +126,7 @@ class TitleNode:
             for i in range(1, len(l)):
                 self.alias.add(l[i])
             l = next(reader)
-            self.comment = l[0]
+            if l: self.comment = l[0] 
             l = next(reader)
             self.items = [i for i in l]
             return self

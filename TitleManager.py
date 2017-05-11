@@ -58,17 +58,29 @@ class TitleManager:
         for node in self.nodes:
             l = []
             l.append(node.get_title().strip().lower())
-            l.extend([i.strip().lower() for i in node.get_alias()]) 
+            l.extend([i for i in node.get_alias()]) 
             if string in l:
                 return node
         return None
 
     def add_node(self, string, aliases=None):
-        #Don't forget to previously check existence of that node.
         node = self.find_node_byName(string)
         if node is not None:
+            # Node already exists
             return False
-        pass
+        
+        node = TitleNode(string)
+
+        if isinstance(aliases, list):
+            for i in aliases:
+                node.add_alias(i)
+        elif isinstance(aliases, str):
+            node.add_alias(i)
+        else: raise TypeError
+
+        self.nodes.append(node)
+        self.nodes.sort()
+        return True
 
     def rm_node(self, string):
         pass
@@ -174,3 +186,4 @@ if __name__ == "__main__":
         tm.print_summary()
         tm.print_full()
         tm.print_node_asBlock(tm.find_node_byName("math"))
+        print(tm.add_node("Information", ["info", "inf"]))
