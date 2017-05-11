@@ -3,73 +3,68 @@ import csv
 
 from TitleNode import TitleNode
 
+# String stripping and trimming is done here.
+
 class TitleManager:
-    """Class that will manage a list of TitleNodes. Basically does:
-    1) Read a csv file, loading all Nodes in memory.
-    2) Apply to the Nodes in memory whatever the user of this Object asks for.
-    3) Saves the processed list of Nodes in a csv file."""
+    """Class that will manage a list of TitleNodes. Basically is supposed to do:
+        1) Read a csv file, loading all Nodes in memory.
+        2) Apply operations upon the list of Nodes.
+        3) Saves the processed list of Nodes in a csv file."""
     
     def __init__(self, filename, bkfile=None):
-        """
-        nodes: list of existent nodes
-        filename: name of file from which to read all nodes
-        bkfile: name of file to which backup all nodes"""
-
+        # nodes: list of existent nodes
+        # filename: name of file from which to read all nodes
+        # bkfile: name of file to which backup all nodes
         self.nodes = []
         self.filename = filename
         self.bkfile = bkfile
         self.read_from_csv(filename)
 
     def __enter__(self):
-        """For use in 'with' statements"""
+        # For use in 'with' statements
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        """For use in 'with' statements"""
+        # For use in 'with' statements
         self.finalize()
 
     def finalize(self):
-        """Makes a backup and saves all nodes"""
+        """If this TitleManager was given a name for a backup file upon instantiation, \
+transfer contents of the old Nodes csv file to this backup.
+        Then saves all nodes in the Nodes csv file, overwriting it."""
         if self.bkfile:
             self.write_to_csv(self.filename, self.bkfile)
         else:
             self.write_to_csv(self.filename)
 
     def print_summary(self):
-        """Prints nodes, one per line, colored"""
+        """Prints all nodes, each one occupying a single line.
+        Information diplayed is only the Node's title and aliases."""
         for node in self.nodes:
-            TitleManager.print_node_asLine(node, 40)
+            TitleManager._print_node_asLine(node, 40)
 
     def print_full(self, string=None):
         """Prints all information about nodes.
-        If 'string' is given, prints only the node identified by it."""
+        If 'string' is given, prints full information about only the node identified by it.
+        Otherwise, prints information for all nodes."""
         if string is not None:
-            node = self.find_node_byName(string)
-            TitleManager.print_node_asBlock(node)
+            node = self._find_node_byName(string)
+            TitleManager._print_node_asBlock(node)
         else:
             for node in self.nodes:
-                TitleManager.print_node_asBlock(node)
+                TitleManager._print_node_asBlock(node)
 
-    def find_node_byName(self, string):
-        """Given a string, attemps to find the node with alias or title
-        that is equivalent to the string. Comparison made case-insensitive and
-        ignoring blank characters"""
-        string = string.strip().lower()
-        for node in self.nodes:
-            l = []
-            l.append(node.get_title().strip().lower())
-            l.extend([i for i in node.get_alias()]) 
-            if string in l:
-                return node
-        return None
-
-    def add_node(self, string, aliases=None):
-        node = self.find_node_byName(string)
+    def add_node(self, title, aliases=None):
+        """Adds a node to the list of Nodes.
+        Node will have title 'title'. Make sure to get the case of this string correctly.
+        If 'aliases' is given, either as a single string or a list of them, \
+add them as aliases for the created Node."""
+        node = self._find_node_byName(title)
         if node is not None:
-            # Node already exists
+            # Node with given title already exists
             return False
         
-        node = TitleNode(string)
+        node = TitleNode(title)
 
         if isinstance(aliases, list):
             for i in aliases:
@@ -141,8 +136,21 @@ class TitleManager:
             for node in self.nodes:
                 node.write_to_csv(wr)
 
+    def _find_node_byName(self, string):
+        """Given a string, attemps to find the node with alias or title
+        that is equivalent to the string. Comparison made case-insensitive and
+        ignoring blank characters"""
+        string = string.strip().lower()
+        for node in self.nodes:
+            l = []
+            l.append(node.get_title().strip().lower())
+            l.extend([i for i in node.get_alias()]) 
+            if string in l:
+                return node
+        return None
+
     @staticmethod
-    def print_node_asLine(node, width=-1):
+    def _print_node_asLine(node, width=-1):
         """Prints a TitleNode in a line, with colors"""
         if not isinstance(node, TitleNode):
             raise TypeError
@@ -159,7 +167,7 @@ class TitleManager:
         )
 
     @staticmethod
-    def print_node_asBlock(node, length=-1):
+    def _print_node_asBlock(node, length=-1):
         """Prints a TitleNode as a block, with all information wanted"""
         title = node.get_title()
         alias = node.get_alias()
@@ -185,5 +193,5 @@ if __name__ == "__main__":
     with TitleManager("test.csv", "test_out.csv") as tm:
         tm.print_summary()
         tm.print_full()
-        tm.print_node_asBlock(tm.find_node_byName("math"))
+        tm._print_node_asBlock(tm._find_node_byName("math"))
         print(tm.add_node("Information", ["info", "inf"]))
