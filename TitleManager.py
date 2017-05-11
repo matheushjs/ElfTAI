@@ -61,8 +61,7 @@ transfer contents of the old Nodes csv file to this backup.
 add them as aliases for the created Node."""
         node = self._find_node_byName(title)
         if node is not None:
-            # Node with given title already exists
-            return False
+            return False # Node with given title already exists
         
         node = TitleNode(title)
 
@@ -78,7 +77,15 @@ add them as aliases for the created Node."""
         return True
 
     def rm_node(self, string):
-        pass
+        """Removes the node identified by 'string' from the list of Nodes.
+        String comparison is made case-insensitively here."""
+        node = self._find_node_byName(string)
+
+        try:
+            self.nodes.remove(node)
+        except ValueError:
+            return False
+        return True
 
     def add_alias(self, string, alias):
         pass
