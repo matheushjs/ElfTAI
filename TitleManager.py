@@ -65,6 +65,9 @@ class TitleManager:
 
     def add_node(self, string, aliases=None):
         #Don't forget to previously check existence of that node.
+        node = self.find_node_byName(string)
+        if node is not None:
+            return False
         pass
 
     def rm_node(self, string):
