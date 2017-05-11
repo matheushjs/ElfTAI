@@ -58,27 +58,28 @@ transfer contents of the old Nodes csv file to this backup.
         """Adds a node to the list of Nodes.
         Node will have title 'title'. Make sure to get the case of this string correctly.
         If 'aliases' is given, either as a single string or a list of them, \
-add them as aliases for the created Node."""
+add them as aliases for the created Node.
+        Return:
+            True if node has been added.
+            False if a node with same title already existed, so new node wasn't added."""
         node = self._find_node_byName(title)
         if node is not None:
             return False # Node with given title already exists
         
         node = TitleNode(title)
-
-        if isinstance(aliases, list):
-            for i in aliases:
-                node.add_alias(i)
-        elif isinstance(aliases, str):
-            node.add_alias(i)
-        else: raise TypeError
-
         self.nodes.append(node)
         self.nodes.sort()
+        
+        if aliases:
+            self.add_alias(title, aliases)
         return True
 
     def rm_node(self, string):
         """Removes the node identified by 'string' from the list of Nodes.
-        String comparison is made case-insensitively here."""
+        String comparison is made case-insensitively here.
+        Return:
+            True if node has been removed.
+            False if node didn't exist anyway."""
         node = self._find_node_byName(string)
 
         try:
@@ -88,10 +89,44 @@ add them as aliases for the created Node."""
         return True
 
     def add_alias(self, string, alias):
-        pass
+        """Adds aliases to node identified by 'string'.
+        'alias' can be either a string or a list of strings.
+        Node searching is made case-insensitively.
+        Return:
+            False if node wasn't found.
+            True if node was found and aliases were added."""
+        node = self._find_node_byName(string)
+        if not node:
+            return False
+
+        if isinstance(alias, list):
+            for i in alias:
+                node.add_alias(i)
+        elif isinstance(alias, str):
+            node.add_alias(alias)
+        else:
+            raise ValueError
+        return True
 
     def rm_alias(self, alias):
-        pass
+        """Removes aliases from the list of nodes.
+        'alias' can be either a string or a list of strings.
+        For each alias, find the node identified by that alias, then remove the alias from it.
+        Return:
+            list of aliases that could not be removed"""
+        error = []
+        if isinstance(alias, list):
+            for i in alias:
+                node = self._find_node_byname(i)
+                if not node or not node.rm_alias(i):
+                    error.append(i)
+        elif isinstance(alias, str):
+            node = self._find_node_byName(alias)
+            if not node or not node.rm_alias(alias):
+                error.append(alias)
+        else:
+            raise ValueError
+        return error
 
     def set_comment(self, comm):
         pass
