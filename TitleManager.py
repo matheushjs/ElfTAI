@@ -46,13 +46,19 @@ transfer contents of the old Nodes csv file to this backup.
     def print_full(self, string=None):
         """Prints all information about nodes.
         If 'string' is given, prints full information about only the node identified by it.
-        Otherwise, prints information for all nodes."""
+        Otherwise, prints information for all nodes.
+        Returns:
+            False, if a string is given, and the node cannot be found.
+            True, otherwise."""
         if string is not None:
             node = self._find_node_byName(string)
+            if not node:
+                return False
             TitleManager._print_node_asBlock(node)
         else:
             for node in self.nodes:
                 TitleManager._print_node_asBlock(node)
+        return True
 
     def add_node(self, title, aliases=None):
         """Adds a node to the list of Nodes.
