@@ -178,7 +178,7 @@ add them as aliases for the created Node.
         Should no node contain that item, prints an adequate message."""
         lnodes = []
         for node in self.nodes:
-            if node.has_item(item):
+            if node.has_item(item) != -1:
                 lnodes.append(node)
 
         if len(lnodes) == 0:
