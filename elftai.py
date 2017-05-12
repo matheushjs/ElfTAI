@@ -14,9 +14,15 @@ def main():
     list_parser.add_argument('name', nargs="*", help='Titles about which to print specific information. If none is given, print summary about all Titles.')
     list_parser.set_defaults(func=parse_list)
 
-    find_parser = subp.add_parser('find', aliases=['search'], help='Display Titles that contain the given item.')
+    find_parser = subp.add_parser('find', aliases=['search'], help='Display Titles that contain the given item')
     find_parser.add_argument('item', nargs=1, help='IDs to find')
     find_parser.set_defaults(func=parse_find)
+
+    add_parser = subp.add_parser('add', help='Add a Title, alias or item')
+    add_parser.add_argument('-t', '--title', type=str, help="Title to create or to which add the given alias/item")
+    add_parser.add_argument('-a', '--alias', type=str, help="Alias to add to the given Title")
+    add_parser.add_argument('-i', '--item', type=str, help="Item to add to the given Title.")
+    add_parser.set_defaults(func=parse_add)
 
     args = parser.parse_args()
     with TitleManager('test.csv', 'test_out.csv') as tm:
@@ -38,6 +44,22 @@ def parse_list(args, tm):
 
 def parse_find(args, tm):
     tm.find_item(args.item[0])
+
+def parse_add(args, tm):
+    if not args.title:
+        print("You need to specify a Title upon which to operate. Use the -t directive.")
+        return
+
+    if args.alias and args.item:
+        print("For simplicity purposes, you cannot add alias and items together.\nUse 2 separate commands, please.")
+        return
+
+    if args.alias:
+        print("Adding an alias to Title.")
+    elif args.item:
+        print("Adding an item to Title.")
+    else:
+        print("Adding a new Title.")
 
 if __name__=='__main__':
     main()
