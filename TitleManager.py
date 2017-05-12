@@ -43,10 +43,11 @@ transfer contents of the old Nodes csv file to this backup.
         for node in self.nodes:
             TitleManager._print_node_asLine(node, 40)
 
-    def print_full(self, string=None):
+    def print_full(self, string=None, length=-1):
         """Prints all information about nodes.
         If 'string' is given, prints full information about only the node identified by it.
-        Otherwise, prints information for all nodes.
+        If 'string is NOT given, prints information for all nodes.
+        If 'length' is given, prints only the latest 'length' items added to the Title.
         Returns:
             False, if a string is given, and the node cannot be found.
             True, otherwise."""
@@ -54,10 +55,10 @@ transfer contents of the old Nodes csv file to this backup.
             node = self._find_node_byName(string)
             if not node:
                 return False
-            TitleManager._print_node_asBlock(node)
+            TitleManager._print_node_asBlock(node, length)
         else:
             for node in self.nodes:
-                TitleManager._print_node_asBlock(node)
+                TitleManager._print_node_asBlock(node, length)
         return True
 
     def add_node(self, title, aliases=None):

@@ -30,7 +30,7 @@ def parse_list(args, tm):
     if len(args.name) != 0:
         for name in args.name:
             if name != args.name[0]: print()
-            ok = tm.print_full(name.strip())
+            ok = tm.print_full(name.strip(), args.entries)
             if not ok:
                 print("Could not find Title by name/alias '{}'".format(name.strip()))
     else:
