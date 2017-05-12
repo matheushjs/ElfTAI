@@ -168,8 +168,19 @@ add them as aliases for the created Node.
             return False
 
     def find_item(self, item):
-        #return a list of nodes that contain item
-        pass
+        """Prints all Nodes that contain item 'item'.
+        Should no node contain that item, prints an adequate message."""
+        lnodes = []
+        for node in self.nodes:
+            if node.has_item(item):
+                lnodes.append(node)
+
+        if len(lnodes) == 0:
+            print("No Nodes contain item '{}'.".format(item))
+        else:
+            print("Items that contain item '{}':".format(item))
+            for node in lnodes:
+                TitleManager._print_node_asLine(node)
 
     def read_from_csv(self, path):
         """Reads all TitleNodes on a csv file, and store them internally."""
