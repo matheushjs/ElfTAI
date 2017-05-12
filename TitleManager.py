@@ -140,11 +140,32 @@ add them as aliases for the created Node.
     def erase_comment(self, comm):
         pass
     
-    def add_item(self, item):
-        pass
+    def add_item(self, string, item):
+        """Adds a unique item 'item' to the node identified by 'string'.
+        Note that items are unique to a single node, but can appear in more than 1 node at a time.
+        Returns:
+            False, if node couldn't be found or the item already existed in the node found.
+            True, otherwise"""
+        node = self._find_node_byName(string)
+        if not node:
+            return False
+        if node.add_item(item):
+            return True
+        else:
+            return False
 
-    def rm_item(self, item):
-        pass
+    def rm_item(self, string, item):
+        """Removes the item 'item' from the node identified by 'string'.
+        Returns:
+            False, if node couldn't be found, or the identified node didn't have that item.
+            True, otherwise"""
+        node = self._find_node_byname(string)
+        if not node:
+            return False
+        if node.rm_item(item):
+            return True
+        else:
+            return False
 
     def find_item(self, item):
         #return a list of nodes that contain item
