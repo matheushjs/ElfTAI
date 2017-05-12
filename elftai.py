@@ -14,7 +14,7 @@ def main():
     list_parser.add_argument('name', nargs="*", help='Titles about which to print specific information. If none is given, print summary about all Titles.')
     list_parser.set_defaults(func=parse_list)
 
-    find_parser = subp.add_parser('find', help='Display Titles that contain the given item.')
+    find_parser = subp.add_parser('find', aliases=['search'], help='Display Titles that contain the given item.')
     find_parser.add_argument('item', nargs=1, help='IDs to find')
     find_parser.set_defaults(func=parse_find)
 
@@ -38,7 +38,6 @@ def parse_list(args, tm):
 
 def parse_find(args, tm):
     tm.find_item(args.item[0])
-
 
 if __name__=='__main__':
     main()
