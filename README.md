@@ -18,7 +18,20 @@ chmod +x ElfTAI/elftai.py
 ```
 * If the commands above work, everything should be fine.
 * Make a clone for each directory where you'd like to manage something. In other words, this program can't manage multiple instances of CSV files.
-* You can edit the CSV file in ElfTAI directory by hand, as long as you acknowledge the format of the CSV file, which is explained below.
+* You can edit the CSV file 'database.csv' in ElfTAI directory by hand, as long as you acknowledge the format of the CSV file, which is explained below.
+
+## Commands
+The program contains 4 subparsers: 'list', 'add', 'rm' and 'comment', each of which can be called like './elftai.py list', for example.
+### list
+```
+./elftai.py list
+```
+```
+./elftai.py list [alias/title] [alias/title]
+```
+### add
+### rm
+### comment
 
 # Motivation
 <p>Consider the following situation: you have a big set of documents to read, each of which are labeled with the area of knowledge they cover (psychology, mathematics etc). Also, each document has it's ID number.</p>
