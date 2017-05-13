@@ -62,6 +62,10 @@ Removes the alias [alias] from whatever Title it belongs to.
 ```
 Removes [item] from the given Title.
 ### comment
+```
+./elftai.py comment -t [alias/title] "[comment]"
+```
+Sets [comment] as the comment on the given title.
 
 # Motivation
 <p>Consider the following situation: you have a big set of documents to read, each of which are labeled with the area of knowledge they cover (psychology, mathematics etc). Also, each document has it's ID number.</p>
