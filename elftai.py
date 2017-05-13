@@ -40,7 +40,7 @@ def main():
     # TODO: operation 'comment' for editing/appending/adding comments
 
     args = parser.parse_args()
-    with TitleManager('test.csv', 'test_out.csv') as tm:
+    with TitleManager('database.csv', 'backup_database.csv') as tm:
         try:
             args.func(args, tm)
         except:
