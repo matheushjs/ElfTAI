@@ -24,6 +24,12 @@ def main():
     add_parser.add_argument('-i', '--item', type=str, help="Item to add to the given Title")
     add_parser.set_defaults(func=parse_add)
 
+    rm_parser = subp.add_parser('rm', help='Remove a Title, alias or item')
+    rm_parser.add_argument('-t', '--title', type=str, help="Title to remove")
+    rm_parser.add_argument('-a', '--alias', type=str, help="Alias to remove")
+    rm_parser.add_argument('-i', '--item', type=str, help="Item to remove")
+    rm_parser.set_defaults(func=parse_rm)
+
     args = parser.parse_args()
     with TitleManager('test.csv', 'test_out.csv') as tm:
         args.func(args, tm)
@@ -57,28 +63,65 @@ def parse_add(args, tm):
     if args.alias:
         retval = tm.add_node(args.title, args.alias)
         if retval is True:
-            print("Created Title {}, with alias {}".format(args.title, args.alias))
+            print("Created Title '{}', with alias '{}'".format(args.title, args.alias))
         else:
             tm.add_alias(args.title, args.alias)
-            print("Added alias {} to Title identified by {}.".format(args.alias, args.title))
+            print("Added alias '{}' to Title identified by '{}'.".format(args.alias, args.title))
 
     elif args.item:
         retval = tm.add_node(args.title)
         if retval is True:
             tm.add_item(args.title, args.item)
-            print("Created Title {}, with item {}".format(args.title, args.item))
+            print("Created Title '{}', with item '{}'".format(args.title, args.item))
         else:
             retval = tm.add_item(args.title, args.item)
             if retval is True:
-                print("Added item {} to Title identified by {}".format(args.item, args.title))
+                print("Added item '{}' to Title identified by '{}'".format(args.item, args.title))
             else:
-                print("Item already exists in Title identified by {}".format(args.item, args.title))
+                print("Item already exists in Title identified by '{}'".format(args.item, args.title))
     else:
         retval = tm.add_node(args.title)
         if retval is True:
-            print("Created Title {}".format(args.title))
+            print("Created Title '{}'".format(args.title))
         else:
             print("Title already exists! Nothing has been done.")
+
+def parse_rm(args, tm):
+    if args.alias:
+        if args.item:
+            print("Ignoring the given item. Delete it on a separate execution, please.")
+        if args.title:
+            print("Title is not needed when deleting an alias, hence will be ignored.")
+
+        retval = tm.rm_alias(args.alias)
+        if len(retval) != 0:
+            print("Could not remove alias '{}'. Confirm if it exists.".format(args.alias))
+        else:
+            print("Removed alias '{}'".format(args.alias))
+
+    elif args.item:
+        if not args.title:
+            print("Items can only be removed from a single Title. Specify a Title with -t")
+            return
+
+        retval = tm.rm_item(args.title, args.item)
+        if retval is True:
+            print("Removed item '{}' from Title identified by '{}'".format(args.item, args.title))
+        else:
+            #TODO: Add a function to check if the node exists or not. Can be done using EXCEPTIONS.
+            print("Could not remove item '{}' from Title identified by '{}'.".format(args.item, args.title))
+            print("Either the Title doesn't exist, or the Title found doesn't have the given item.")
+
+    elif args.title:
+        inp = input("Confirm removal of Title identified by '{}' [Y/n]: ".format(args.title))
+        if inp.lower() == 'y':
+            retval = tm.rm_node(args.title)
+            if retval is True:
+                print("Removed")
+            else:
+                print("Title doesn't exist. Nothing has been done.")
+        else:
+            print("Canceled")
 
 if __name__=='__main__':
     main()

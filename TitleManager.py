@@ -91,7 +91,7 @@ add them as aliases for the created Node.
 
         try:
             self.nodes.remove(node)
-        except ValueError:
+        except:
             return False
         return True
 
@@ -124,7 +124,7 @@ add them as aliases for the created Node.
         error = []
         if isinstance(alias, list):
             for i in alias:
-                node = self._find_node_byname(i)
+                node = self._find_node_byName(i)
                 if not node or not node.rm_alias(i):
                     error.append(i)
         elif isinstance(alias, str):
@@ -166,7 +166,7 @@ add them as aliases for the created Node.
         Returns:
             False, if node couldn't be found, or the identified node didn't have that item.
             True, otherwise"""
-        node = self._find_node_byname(string)
+        node = self._find_node_byName(string)
         if not node:
             return False
         if node.rm_item(item):
