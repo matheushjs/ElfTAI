@@ -21,7 +21,7 @@ chmod +x ElfTAI/elftai
 * You can edit the CSV file 'database.csv' in ElfTAI directory by hand, as long as you acknowledge the format of the CSV file, which is explained below.
 * After executing the commands above, you can use the following ones to bring 'elftai' program to root directory:
 ```
-cp ./ElfTAI/elftai ./ElfTAI/modules_elf ./
+cp ./ElfTAI/elftai -r ./ElfTAI/modules_elf ./
 ./elftai list
 rm -rf ./ElfTAI
 ```
