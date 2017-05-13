@@ -11,14 +11,20 @@
 [Example image of basic usage](example.png)
 ```
 git clone https://github.com/matheushjs/ElfTAI
-chmod +x ElfTAI/elftai.py
-./ElfTAI/elftai.py list
-./ElfTAI/elftai.py add -t "Hello World!" -a hw
-./ElfTAI/elftai.py rm -t hw
+chmod +x ElfTAI/elftai
+./ElfTAI/elftai list
+./ElfTAI/elftai add -t "Hello World!" -a hw
+./ElfTAI/elftai rm -t hw
 ```
 * If the commands above work, everything should be fine.
 * Make a clone for each directory where you'd like to manage something. In other words, this program can't manage multiple instances of CSV files.
 * You can edit the CSV file 'database.csv' in ElfTAI directory by hand, as long as you acknowledge the format of the CSV file, which is explained below.
+* After executing the commands above, you can use the following ones to bring 'elftai' program to root directory:
+```
+cp ./ElfTAI/elftai ./ElfTAI/modules_elf ./
+./elftai list
+rm -rf ./ElfTAI
+```
 
 ## Commands
 The program contains 4 subparsers: 'list', 'add', 'rm' and 'comment', each of which can be called like './elftai.py list', for example.
