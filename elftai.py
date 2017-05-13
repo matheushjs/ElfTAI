@@ -21,7 +21,7 @@ def main():
     add_parser = subp.add_parser('add', help='Add a Title, alias or item')
     add_parser.add_argument('-t', '--title', type=str, help="Title to create or to which add the given alias/item")
     add_parser.add_argument('-a', '--alias', type=str, help="Alias to add to the given Title")
-    add_parser.add_argument('-i', '--item', type=str, help="Item to add to the given Title.")
+    add_parser.add_argument('-i', '--item', type=str, help="Item to add to the given Title")
     add_parser.set_defaults(func=parse_add)
 
     args = parser.parse_args()
@@ -55,11 +55,30 @@ def parse_add(args, tm):
         return
 
     if args.alias:
-        print("Adding an alias to Title.")
+        retval = tm.add_node(args.title, args.alias)
+        if retval is True:
+            print("Created Title {}, with alias {}".format(args.title, args.alias))
+        else:
+            tm.add_alias(args.title, args.alias)
+            print("Added alias {} to Title identified by {}.".format(args.alias, args.title))
+
     elif args.item:
-        print("Adding an item to Title.")
+        retval = tm.add_node(args.title)
+        if retval is True:
+            tm.add_item(args.title, args.item)
+            print("Created Title {}, with item {}".format(args.title, args.item))
+        else:
+            retval = tm.add_item(args.title, args.item)
+            if retval is True:
+                print("Added item {} to Title identified by {}".format(args.item, args.title))
+            else:
+                print("Item already exists in Title identified by {}".format(args.item, args.title))
     else:
-        print("Adding a new Title.")
+        retval = tm.add_node(args.title)
+        if retval is True:
+            print("Created Title {}".format(args.title))
+        else:
+            print("Title already exists! Nothing has been done.")
 
 if __name__=='__main__':
     main()
