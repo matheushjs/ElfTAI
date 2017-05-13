@@ -4,19 +4,21 @@
 <ul>
 <li>Python 3</li>
 <li>Python packages: termcolor, argparse</li>
-<li>Linux Mint 18 (Should work on all Ubuntu Linux'es, though)</li>
+<li>Linux Mint 18 (Should work on every Ubuntu, if not on every Linux)</li>
 </ul>
 
 # Usage
 [Example image of basic usage](example.png)
-<ul>
-<li>git clone https://github.com/matheushjs/ElfTAI</li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
-</ul>
+```
+git clone https://github.com/matheushjs/ElfTAI
+chmod +x ElfTAI/elftai.py
+./ElfTAI/elftai.py list
+./ElfTAI/elftai.py add -t "Hello World!" -a hw
+./ElfTAI/elftai.py rm -t hw
+```
+* If the commands above work, everything should be fine.
+* Make a clone for each directory where you'd like to manage something. In other words, this program can't manage multiple instances of CSV files.
+* You can edit the CSV file in ElfTAI directory by hand, as long as you acknowledge the format of the CSV file, which is explained below.
 
 # Motivation
 <p>Consider the following situation: you have a big set of documents to read, each of which are labeled with the area of knowledge they cover (psychology, mathematics etc). Also, each document has it's ID number.</p>
