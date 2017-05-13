@@ -41,11 +41,10 @@ def main():
 
     args = parser.parse_args()
     with TitleManager('test.csv', 'test_out.csv') as tm:
-        args.func(args, tm)
-        #try:
-        #    args.func(args, tm)
-        #except:
-        #    print("Wrong command line operation. Try running '{} -h'".format(sys.argv[0]))
+        try:
+            args.func(args, tm)
+        except:
+            print("Wrong command line operation. Try running '{} -h'".format(sys.argv[0]))
 
 def parse_list(args, tm):
     if len(args.name) != 0:
