@@ -198,12 +198,16 @@ add them as aliases for the created Node.
         if not isinstance(path, str):
             raise TypeError
 
-        with open(path) as fp:
-            rd = csv.reader(fp)
-            while True:
-                node = TitleNode().read_from_csv(rd)
-                if not node: break #read failed
-                self.nodes.append(node)
+        try:
+            with open(path) as fp:
+                rd = csv.reader(fp)
+                while True:
+                    node = TitleNode().read_from_csv(rd)
+                    if not node: break #read failed
+                    self.nodes.append(node)
+        except:
+            with open(path, "w") as fp:
+                pass
 
     def write_to_csv(self, path, bkpath=None):
         """Writes all TitleNodes to the csv file.

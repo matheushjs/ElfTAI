@@ -132,6 +132,9 @@ def parse_rm(args, tm):
         else:
             print("Canceled")
 
+    else:
+        print("Please, provide one of the following:\n1) A title with -t\n2) An alias with -a\n3) An item with -i and a title/alias with -t")
+
 def parse_comm(args, tm):
     if not args.title:
         print("You must provide a title using argument directive -t")
