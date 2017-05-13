@@ -4,7 +4,7 @@ import sys
 import termcolor as tc
 from argparse import ArgumentParser
 
-from TitleManager import TitleManager
+from modules_elf import TitleManager
 
 def main():
     parser = ArgumentParser(description="ElfTAI (Title/Alias/Items) - Program for organizing data with specific characteristics.", allow_abbrev=True)

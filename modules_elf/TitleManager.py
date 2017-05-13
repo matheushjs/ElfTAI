@@ -1,7 +1,7 @@
 import termcolor as tc
 import csv
 
-from TitleNode import TitleNode
+from modules_elf import TitleNode
 
 # String stripping and trimming is done here.
 
