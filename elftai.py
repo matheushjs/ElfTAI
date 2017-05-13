@@ -31,6 +31,11 @@ def main():
     rm_parser.add_argument('-i', '--item', type=str, help="Item to remove")
     rm_parser.set_defaults(func=parse_rm)
 
+    comm_parser = subp.add_parser('comment', help='Change comment associated to a Title')
+    comm_parser.add_argument('-t', '--title', type=str, help="Title of which to change comment")
+    comm_parser.add_argument('string', nargs=1, type=str, help="Comment to associate to the Title")
+    comm_parser.set_defaults(func=parse_comm)
+
     # TODO: operation 'name' for editing Title's title
     # TODO: operation 'comment' for editing/appending/adding comments
 
@@ -126,6 +131,17 @@ def parse_rm(args, tm):
                 print("Title doesn't exist. Nothing has been done.")
         else:
             print("Canceled")
+
+def parse_comm(args, tm):
+    if not args.title:
+        print("You must provide a title using argument directive -t")
+        return
+    
+    retval = tm.set_comment(args.title, args.string[0])
+    if retval is None:
+        print("Could not find Node identified by title '{}'".format(args.title))
+    else:
+        print("Replaced old comment '{}'".format(retval))
 
 if __name__=='__main__':
     main()
