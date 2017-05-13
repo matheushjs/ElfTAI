@@ -118,7 +118,7 @@ def parse_rm(args, tm):
 
     elif args.title:
         inp = input(tc.colored("Confirm removal of Title identified by '{}' [Y/n]: ".format(args.title), "red", attrs=['bold']))
-        if inp.lower() == 'y':
+        if inp.lower().strip() == 'y':
             retval = tm.rm_node(args.title)
             if retval is True:
                 print("Removed")
