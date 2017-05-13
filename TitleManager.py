@@ -135,8 +135,15 @@ add them as aliases for the created Node.
             raise ValueError
         return error
 
-    def set_comment(self, comm):
-        pass
+    def set_comment(self, string, comm):
+        """Replaces current comment of Node identified by 'string' for the string given in 'comm'
+        returns:
+            The comment string that has been replaced
+            None, if node could not be found"""
+        node = self._find_node_byName(string)
+        if not node:
+            return None
+        return node.set_comment(comm)
 
     def add_comment(self, comm):
         #Consider making it possible to add multiple comments, as in a csv
@@ -144,9 +151,6 @@ add them as aliases for the created Node.
         #If we did as suggested above, comments could be indexed and removed by index
         pass
 
-    def erase_comment(self, comm):
-        pass
-    
     def add_item(self, string, item):
         """Adds a unique item 'item' to the node identified by 'string'.
         Note that items are unique to a single node, but can appear in more than 1 node at a time.
