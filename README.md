@@ -27,49 +27,49 @@ rm -rf ./ElfTAI
 ```
 
 ## Commands
-The program contains 4 subparsers: 'list', 'add', 'rm' and 'comment', each of which can be called like './elftai.py list', for example.
+The program contains 4 subparsers: 'list', 'add', 'rm' and 'comment', each of which can be called like './elftai list', for example.
 ### list
 ```
-./elftai.py list
+./elftai list
 ```
 Prints a list of all Titles currently in the file.
 ```
-./elftai.py list [alias/title] [alias/title]
+./elftai list [alias/title] [alias/title]
 ```
 Prints information about each Title given as argument. Only the 5 latest items added to each Title are displayed.
 ```
-./elftai.py list [alias/title] [alias/title] -e 10
+./elftai list [alias/title] [alias/title] -e 10
 ```
 Same as above, but prints latest 10 items.
 ### add
 ```
-./elftai.py add -t [name of new title]
+./elftai add -t [name of new title]
 ```
 Creates a new Title with the name given.
 ```
-./elftai.py add -t [alias/title] -a [new alias]
+./elftai add -t [alias/title] -a [new alias]
 ```
 Adds [new alias] as an alias to the given Title.
 ```
-./elftai.py add -t [alias/title] -i [new item]
+./elftai add -t [alias/title] -i [new item]
 ```
 Adds the item [new item] to the given Title.
 ### rm
 ```
-./elftai.py rm -t [name of title]
+./elftai rm -t [name of title]
 ```
 Removes a Title from the file. This is a destructive command, so the user is prompted for confirmation before execution.
 ```
-./elftai.py rm -a [alias]
+./elftai rm -a [alias]
 ```
 Removes the alias [alias] from whatever Title it belongs to.
 ```
-./elftai.py rm -t [alias/title] -i [item]
+./elftai rm -t [alias/title] -i [item]
 ```
 Removes [item] from the given Title.
 ### comment
 ```
-./elftai.py comment -t [alias/title] "[comment]"
+./elftai comment -t [alias/title] "[comment]"
 ```
 Sets [comment] as the comment on the given title.
 
