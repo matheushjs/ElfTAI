@@ -1,7 +1,22 @@
 # Elf TAI (Title - Alias - Items)
 
+# Environment
+<ul>
+<li>Python 3</li>
+<li>Python packages: termcolor, argparse</li>
+<li>Linux Mint 18 (Should work on all Ubuntu Linux'es, though)</li>
+</ul>
+
 # Usage
 [Example image of basic usage](example.png)
+<ul>
+<li>git clone https://github.com/matheushjs/ElfTAI</li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+</ul>
 
 # Motivation
 <p>Consider the following situation: you have a big set of documents to read, each of which are labeled with the area of knowledge they cover (psychology, mathematics etc). Also, each document has it's ID number.</p>
