@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import sys
+import termcolor as tc
 from argparse import ArgumentParser
 
 from TitleManager import TitleManager
@@ -29,6 +30,9 @@ def main():
     rm_parser.add_argument('-a', '--alias', type=str, help="Alias to remove")
     rm_parser.add_argument('-i', '--item', type=str, help="Item to remove")
     rm_parser.set_defaults(func=parse_rm)
+
+    # TODO: operation 'name' for editing Title's title
+    # TODO: operation 'comment' for editing/appending/adding comments
 
     args = parser.parse_args()
     with TitleManager('test.csv', 'test_out.csv') as tm:
@@ -113,7 +117,7 @@ def parse_rm(args, tm):
             print("Either the Title doesn't exist, or the Title found doesn't have the given item.")
 
     elif args.title:
-        inp = input("Confirm removal of Title identified by '{}' [Y/n]: ".format(args.title))
+        inp = input(tc.colored("Confirm removal of Title identified by '{}' [Y/n]: ".format(args.title), "red", attrs=['bold']))
         if inp.lower() == 'y':
             retval = tm.rm_node(args.title)
             if retval is True:
