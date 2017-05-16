@@ -1,74 +1,25 @@
 import csv
 
+from .namedEntity import NamedEntity
+
 # Lowercasing should be done in this class, when it is essential (adding aliases, comparison functions)
 # Any other String treatment is up to the user
 
-class TitleNode:
+class TitleNode (NamedEntity):
     """This class will represent a single Title, and handle Title-specific queries.
     
     Each Title contains:
-        1) Title
-        2) Aliases
-        3) Comment
-        4) Items
+        1) Title & Aliases (inherited from NamedEntity)
+        2) Comment
+        3) Items
         
     No string treatment is done in this class.
     String comparisons are done case-insentively, though."""
 
     def __init__(self, title="Null"):
-        self.title = title
-        self.alias = set([])
+        super(TitleNode, self).__init__(title)
         self.comment = ""
         self.items = []
-
-    # TitleNodes will be compared by their titles.
-    def __eq__(self,other): return self.title.lower() == other.title.lower()
-    def __ne__(self,other): return self.title.lower() != other.title.lower()
-    def __lt__(self,other): return self.title.lower() < other.title.lower()
-    def __le__(self,other): return self.title.lower() <= other.title.lower()
-    def __gt__(self,other): return self.title.lower() > other.title.lower()
-    def __ge__(self,other): return self.title.lower() >= other.title.lower()
-
-    def get_title(self):
-        """Returns the Title's name."""
-        return self.title
-
-    def has_alias(self, alias):
-        """Checks if this Node contains the given alias.
-        Aliases are case-insentively compared."""
-        if not isinstance(alias, str):
-            raise TypeError
-        if alias.lower() in self.alias:
-            return True
-        return False
-
-    def add_alias(self, alias):
-        """Adds given 'alias' as an alias to this Node.
-        'alias' is converted to lowercase before adding.
-        Returns False if it already existed."""
-        if not isinstance(alias, str):
-            raise TypeError
-        if self.has_alias(alias):
-            return False
-        self.alias.add(alias.lower())
-        return True
-
-    def rm_alias(self, alias):
-        """Removes given 'alias' from this Node.
-        Alias is converted to lowercase before searching for it.
-        Returns True if it existed and was successfully removed"""
-        if not isinstance(alias, str):
-            raise TypeError
-        if not self.has_alias(alias):
-            return False
-        else:
-            self.alias.remove(alias.lower())
-            return True
-
-    def get_alias(self):
-        """Returns a list with all aliases of this Node.
-        List is returned in no particular order."""
-        return [i for i in self.alias]
 
     def set_comment(self, comment):
         """Changes current comment of this Node.
@@ -139,8 +90,8 @@ class TitleNode:
             [title],[alias1],[alias2],...
             [comment]
             [item1],[item2],..."""
-        title_row = [self.title,]
-        title_row.extend(self.alias)
+        title_row = [self.get_title(),]
+        title_row.extend(self.get_alias())
         writer.writerows([title_row, [self.comment,], self.items])
 
     def read_from_csv(self, reader):
@@ -148,7 +99,7 @@ class TitleNode:
         Returns self if reading was successful. None if end-of-file was reached"""
         try:
             l = next(reader)
-            self.title = l[0]
+            self.set_title(l[0])
             for i in range(1, len(l)):
                 self.alias.add(l[i])
             l = next(reader)
