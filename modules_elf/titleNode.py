@@ -1,6 +1,7 @@
 import csv
 
 from .namedEntity import NamedEntity
+from .comment import Comment
 
 # Lowercasing should be done in this class, when it is essential (adding aliases, comparison functions)
 # Any other String treatment is up to the user
@@ -18,21 +19,17 @@ class TitleNode (NamedEntity):
 
     def __init__(self, title="Null"):
         super(TitleNode, self).__init__(title)
-        self.comment = ""
+        self.comment = Comment()
         self.items = []
 
     def set_comment(self, comment):
         """Changes current comment of this Node.
         Returns the comment that was replaced by the new one."""
-        if not isinstance(comment, str):
-            raise TypeError
-        temp = self.comment
-        self.comment = comment
-        return temp
+        return self.comment.set_comment(comment)
 
     def get_comment(self):
         """Returns the comment in this Node."""
-        return self.comment
+        return self.comment.get_comment()
 
     def has_item(self, item):
         """Checks if this Node contains 'item'.
@@ -92,7 +89,7 @@ class TitleNode (NamedEntity):
             [item1],[item2],..."""
         title_row = [self.get_title(),]
         title_row.extend(self.get_alias())
-        writer.writerows([title_row, [self.comment,], self.items])
+        writer.writerows([title_row, [self.comment.get_comment(),], self.items])
 
     def read_from_csv(self, reader):
         """Reads a Node from a csv file, overwriting the current Node instance.
@@ -103,7 +100,7 @@ class TitleNode (NamedEntity):
             for i in range(1, len(l)):
                 self.alias.add(l[i])
             l = next(reader)
-            if l: self.comment = l[0] 
+            if l: self.comment.set_comment(l[0])
             l = next(reader)
             self.items = [i for i in l]
             return self
