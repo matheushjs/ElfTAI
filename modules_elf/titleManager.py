@@ -145,7 +145,7 @@ add them as aliases for the created Node.
             return None
         
         comment = node.get_comment()
-        if comment.size() == 0:
+        if len(comment) == 0:
             comment.add(comm)
             return ""
         else:

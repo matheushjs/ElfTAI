@@ -13,6 +13,10 @@ class Comment:
     def __setitem__(self, idx, new):
         self.set(idx, new)
 
+    def __len__(self):
+        """Returns the number of comments in this Object."""
+        return len(self.comment)
+
     def set(self, index, comment):
         """Changes one comment of this Object.
         Returns the comment that was replaced by the new one."""
@@ -40,7 +44,3 @@ class Comment:
     def get_list(self):
         """Returns the list with all comments"""
         return self.comment
-
-    def size(self):
-        """Returns the number of comments in this Object."""
-        return len(self.comment)
