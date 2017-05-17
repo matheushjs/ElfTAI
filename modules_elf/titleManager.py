@@ -277,6 +277,8 @@ add them as aliases for the created Node.
         for c in comm.get_list():
             print(tc.colored("\t[{}] - '{}'".format(i, c), 'yellow'))
             i = i + 1
+        if i == 0:
+            print(tc.colored("Empty", 'yellow'))
 
         if len(items) == 0:
             print(tc.colored("Empty", 'white', attrs=['bold', 'dark']))
