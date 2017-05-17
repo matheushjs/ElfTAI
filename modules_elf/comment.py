@@ -44,3 +44,8 @@ class Comment:
     def get_list(self):
         """Returns the list with all comments"""
         return self.comment
+
+    def rm(self, index):
+        """Removes comment of index 'index'.
+        Returns the removed comment."""
+        return self.comment.pop(index)

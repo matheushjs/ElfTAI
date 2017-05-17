@@ -40,11 +40,13 @@ def main():
     # TODO: operation 'comment' for editing/appending/adding comments
 
     args = parser.parse_args()
-    with TitleManager('database.csv', 'backup_database.csv') as tm:
-        try:
-            args.func(args, tm)
-        except:
-            print("Wrong command line operation. Try running '{} -h'".format(sys.argv[0]))
+    tm = TitleManager('database.csv', 'backup_database.csv')
+    try:
+        args.func(args, tm)
+    except:
+        print("Wrong command line operation. Try running '{} -h'".format(sys.argv[0]))
+    else:
+        tm.close()
 
 def parse_list(args, tm):
     if len(args.name) != 0:
@@ -139,9 +141,12 @@ def parse_comm(args, tm):
         print("You must provide a title using argument directive -t")
         return
     
-    retval = tm.set_comment(args.title, args.string[0])
-    if retval is None:
+    try:
+        retval = tm.set_comment(args.title, 0, args.string[0])
+    except ValueError:
         print("Could not find Node identified by title '{}'".format(args.title))
+    except IndexError:
+        print("Comment of that index does not exist")
     else:
         print("Replaced old comment '{}'".format(retval))
 

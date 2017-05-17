@@ -24,11 +24,7 @@ class TitleManager:
         # For use in 'with' statements
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        # For use in 'with' statements
-        self.finalize()
-
-    def finalize(self):
+    def close(self):
         """If this TitleManager was given a name for a backup file upon instantiation, \
 transfer contents of the old Nodes csv file to this backup.
         Then saves all nodes in the Nodes csv file, overwriting it."""
@@ -112,7 +108,7 @@ add them as aliases for the created Node.
         elif isinstance(alias, str):
             node.add_alias(alias)
         else:
-            raise ValueError
+            raise TypeError
         return True
 
     def rm_alias(self, alias):
@@ -132,32 +128,52 @@ add them as aliases for the created Node.
             if not node or not node.rm_alias(alias):
                 error.append(alias)
         else:
-            raise ValueError
+            raise TypeError
         return error
 
-    def set_comment(self, string, comm):
-        """Replaces current comment of Node identified by 'string' for the string given in 'comm'
+    def set_comment(self, string, n, comm):
+        """Replaces the n-th comment of node identified by 'string'.
         returns:
             The comment string that has been replaced
-            None, if node could not be found"""
+        raises:
+            ValueError if node could not be identified
+            IndexError if comment of given index does not exist
+            TypeError if type of arguments are wrong"""
         node = self._find_node_byName(string)
         if not node:
-            return None
+            raise ValueError
         
         comment = node.get_comment()
-        if len(comment) == 0:
-            comment.add(comm)
-            return ""
-        else:
-            temp = comment[0]
-            comment[0] = comm
-            return temp
+        temp = comment[n]
+        comment[n] = comm
+        return temp
 
-    def add_comment(self, comm):
-        #Consider making it possible to add multiple comments, as in a csv
-        #Or just append... but that's shitty
-        #If we did as suggested above, comments could be indexed and removed by index
-        pass
+    def add_comment(self, string, comm):
+        """Adds a comment to node identified by 'string'.
+        Returns False if node doesn't exist.
+        raises:
+            ValueError if node could not be identified
+            IndexError if comment of given index does not exist
+            TypeError if type of arguments are wrong"""
+        node = self._find_node_byName(string)
+        if not node:
+            raise ValueError
+
+        comment = node.get_comment()
+        comment.add(comm)
+
+    def rm_comment(self, string, idx):
+        """Removes the idx-th comment of the node identified by 'string'
+        Returns the removed comment.
+        raises:
+            ValueError if node could not be identified
+            IndexError if comment of given index does not exist
+            TypeError if type of arguments are wrong"""
+        node = self._find_node_byName(string)
+        if not node:
+            raise ValueError
+        
+        return node.rm_comment(idx)
 
     def add_item(self, string, item):
         """Adds a unique item 'item' to the node identified by 'string'.
