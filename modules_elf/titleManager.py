@@ -143,7 +143,15 @@ add them as aliases for the created Node.
         node = self._find_node_byName(string)
         if not node:
             return None
-        return node.set_comment(comm)
+        
+        comment = node.get_comment()
+        if comment.size() == 0:
+            comment.add(comm)
+            return ""
+        else:
+            temp = comment[0]
+            comment[0] = comm
+            return temp
 
     def add_comment(self, comm):
         #Consider making it possible to add multiple comments, as in a csv
@@ -263,14 +271,12 @@ add them as aliases for the created Node.
         comm = node.get_comment()
         items = node.get_items(length)
 
-        print(
-            tc.colored("{name} - '{comment}'".format(
-                name = title,
-                comment = comm
-            ),
-            'magenta',
-            attrs=['bold'])
-        )
+        print(tc.colored("{}".format(title), 'magenta', attrs=['bold']))
+
+        i = 0
+        for c in comm.get_list():
+            print(tc.colored("\t[{}] - '{}'".format(i, c), 'yellow'))
+            i = i + 1
 
         if len(items) == 0:
             print(tc.colored("Empty", 'white', attrs=['bold', 'dark']))

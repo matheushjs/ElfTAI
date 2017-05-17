@@ -22,14 +22,9 @@ class TitleNode (NamedEntity):
         self.comment = Comment()
         self.items = []
 
-    def set_comment(self, comment):
-        """Changes current comment of this Node.
-        Returns the comment that was replaced by the new one."""
-        return self.comment.set_comment(comment)
-
     def get_comment(self):
-        """Returns the comment in this Node."""
-        return self.comment.get_comment()
+        """Returns the Comment object in this Node."""
+        return self.comment
 
     def has_item(self, item):
         """Checks if this Node contains 'item'.
@@ -85,11 +80,11 @@ class TitleNode (NamedEntity):
         """Appends this Node to the csv file.
         The format is as described in README.md:
             [title],[alias1],[alias2],...
-            [comment]
+            [comment1],[comment2],[comment3],...
             [item1],[item2],..."""
         title_row = [self.get_title(),]
         title_row.extend(self.get_alias())
-        writer.writerows([title_row, [self.comment.get_comment(),], self.items])
+        writer.writerows([title_row, self.comment.get_list(), self.items])
 
     def read_from_csv(self, reader):
         """Reads a Node from a csv file, overwriting the current Node instance.
@@ -99,41 +94,13 @@ class TitleNode (NamedEntity):
             self.set_title(l[0])
             for i in range(1, len(l)):
                 self.alias.add(l[i])
+
             l = next(reader)
-            if l: self.comment.set_comment(l[0])
+            if l:
+                self.comment.add(l)
+            
             l = next(reader)
             self.items = [i for i in l]
             return self
         except StopIteration:
             return None
-
-
-if __name__ == "__main__":
-    tn = TitleNode("Mathematics")
-    tn.add_alias("Math")
-    for i in tn.get_alias():
-        print(i)
-    tn.add_item("1134")
-    tn.add_item("1135")
-    tn.add_item("1136")
-    tn.add_item("1137")
-    tn.add_item("1138")
-    tn.add_item("1139")
-    tn.add_item("1139")
-    tn.rm_item("2")
-    tn.rm_item("1134")
-    tn.rm_alias("math")
-    tn.set_comment("Left 1135 at Page 72")
-    for i in tn.get_alias():
-        print(i)
-    print(tn.get_comment())
-    for i in tn.get_items(4):
-        print(i)
-
-
-    with open("test_out.csv", "w") as fp:
-        tn.write_to_csv(csv.writer(fp))
-
-    with open("test_out.csv") as fp:
-        rd = csv.reader(fp)
-        tn.read_from_csv(rd)
