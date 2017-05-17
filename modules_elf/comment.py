@@ -1,8 +1,13 @@
 
 class Comment:
     """Class for managing comments.
-    Manages a list of comments, allowing operations replace, add, remove.
-    May provide user-interaction functions too, if needed."""
+    Encapsulates a list of comments, allowing operations within it.
+    
+    Exceptions:
+        TypeError: When any given argument has the wrong type.
+        IndexError: When an inexistent element is accessed.
+        Exception: Any other exception is to be considered a fatal bug.
+    """
 
     def __init__(self):
         self.comment = []
@@ -31,9 +36,8 @@ class Comment:
         'comment' can be a string or a list of these."""
         if isinstance(comment, str):
             self.comment.append(comment)
-        elif isinstance(comment, list):
-            if False in [isinstance(i, str) for i in comment]:
-                raise TypeError
+        elif isinstance(comment, list) \
+        and False not in [isinstance(i, str) for i in comment]:
             self.comment.extend(comment)
         else: raise TypeError
 
@@ -43,7 +47,7 @@ class Comment:
 
     def get_list(self):
         """Returns the list with all comments"""
-        return self.comment
+        return [i for i in self.comment]
 
     def rm(self, index):
         """Removes comment of index 'index'.
