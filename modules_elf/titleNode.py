@@ -83,9 +83,6 @@ class TitleNode(NamedEntity):
             [title],[alias1],[alias2],...
             [comment1],[comment2],[comment3],...
             [item1],[item2],..."""
-        if not isinstance(writer, csv.writer):
-            raise TypeError
-
         title_row = [self.get_title(),]
         title_row.extend(self.get_alias())
         writer.writerows([title_row, self.comment.get_list(), self.items])
@@ -95,9 +92,6 @@ class TitleNode(NamedEntity):
         Returns self. 
         Raises:
             ValueError - if node could not be read from 'reader'."""
-        if not isinstance(reader, csv.reader):
-            raise TypeError
-
         try:
             l = next(reader)
             self.set_title(l[0])
