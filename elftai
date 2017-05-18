@@ -49,6 +49,7 @@ def main():
         args.func(args, tm)
     except:
         print("Wrong command line operation. Try running '{} -h'".format(sys.argv[0]))
+        raise
     else:
         tm.close()
 

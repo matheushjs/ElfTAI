@@ -42,7 +42,7 @@ class TitleManager:
         """Prints all nodes, each one occupying a single line.
         Information diplayed is only the Node's title and aliases."""
         for node in self.nodes:
-            TitleManager._print_node_asLine(node, 40)
+            node.print_line(40)
 
     def print_full(self, string=None, length=-1):
         """Prints all information about nodes.
@@ -55,10 +55,10 @@ class TitleManager:
             node = self._find_node_byName(string)
             if not node:
                 raise ValueError
-            TitleManager._print_node_asBlock(node, length)
+            node.print_block(length)
         else:
             for node in self.nodes:
-                TitleManager._print_node_asBlock(node, length)
+                node.print_block(length)
 
     def add_node(self, title):
         """Adds a node to the list of Nodes.
@@ -185,7 +185,7 @@ class TitleManager:
         if len(lnodes) != 0:
             print("Items that contain item '{}':".format(item))
             for node in lnodes:
-                TitleManager._print_node_asLine(node)
+                node.print_line()
         return lnodes
 
     def read_from_csv(self, path):
@@ -246,42 +246,3 @@ class TitleManager:
             if string in l:
                 return node
         return None
-
-    @staticmethod
-    def _print_node_asLine(node, width=-1):
-        """Prints a TitleNode in a line, with colors"""
-        if not isinstance(node, TitleNode):
-            raise TypeError
-
-        title = node.get_title()
-        alias = node.get_alias()
-        if width == -1:
-            width = 0
-
-        print("{name} ({alias})".format(
-                name=tc.colored(title.center(width), 'cyan', attrs=['bold', 'dark']),
-                alias=tc.colored(','.join(alias), color='yellow')
-            )
-        )
-
-    @staticmethod
-    def _print_node_asBlock(node, length=-1):
-        """Prints a TitleNode as a block, with all information wanted"""
-        title = node.get_title()
-        alias = node.get_alias()
-        comm = node.get_comment()
-        items = node.get_items(length)
-
-        print(tc.colored("{}".format(title), 'magenta', attrs=['bold']))
-
-        i = 0
-        for c in comm.get_list():
-            print(tc.colored("\t[{}] - '{}'".format(i, c), 'yellow'))
-            i = i + 1
-        if i == 0:
-            print(tc.colored("Empty", 'yellow'))
-
-        if len(items) == 0:
-            print(tc.colored("Empty", attrs=['bold']))
-        else:
-            print(tc.colored(', '.join([ str(i) for i in items]), attrs=['bold']))

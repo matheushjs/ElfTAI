@@ -1,4 +1,5 @@
 import csv
+import termcolor as tc
 
 from .namedEntity import NamedEntity
 from .comment import Comment
@@ -107,3 +108,39 @@ class TitleNode(NamedEntity):
             return self
         except StopIteration:
             raise ValueError
+
+    def print_line(self, width=0):
+        """Prints a TitleNode in a line, with colors.
+        TitleNode's title will span 'width' characters.
+        Intentionally not implemented as __str__"""
+        if not isinstance(width, int):
+            raise TypeError
+        
+        print("{name} ({alias})".format(
+                name=tc.colored(self.get_title().center(width), 'cyan', attrs=['bold', 'dark']),
+                alias=tc.colored(','.join(self.get_alias()), color='yellow')
+            )
+        )
+
+    def print_block(self, length=-1):
+        """Prints a TitleNode as a block, with all information desired.
+        Only latest 'length' items will be printed, if it's given.
+        If it's not given, will print all items."""
+        title = self.get_title()
+        alias = self.get_alias()
+        comm = self.get_comment()
+        items = self.get_items(length)
+
+        print(tc.colored("{}".format(title), 'magenta', attrs=['bold']))
+
+        i = 0
+        for c in comm.get_list():
+            print(tc.colored("\t[{}] - '{}'".format(i, c), 'yellow'))
+            i = i + 1
+        if i == 0:
+            print(tc.colored("Empty", 'yellow'))
+
+        if len(items) == 0:
+            print(tc.colored("Empty", attrs=['bold']))
+        else:
+            print(tc.colored(', '.join([ str(i) for i in items]), attrs=['bold']))
