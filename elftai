@@ -43,9 +43,6 @@ def main():
     comm_rm.add_argument('index', nargs=1, type=int, help="Index of comment to remove")
     comm_rm.set_defaults(func=parse_comm_rm)
 
-    # TODO: operation 'name' for editing Title's title
-    # TODO: operation 'comment' for editing/appending/adding comments
-
     args = parser.parse_args()
     tm = TitleManager('database.csv', 'backup_database.csv')
     try:
