@@ -62,7 +62,7 @@ def main():
     comm_rm.set_defaults(func=parse_comm_rm)
 
     args = parser.parse_args()
-    tm = TitleManager('database.csv', 'backup_database.csv')
+    tm = TitleManager('database_elftai.csv', 'backup_elftai.csv')
     try:
         args.func(args, tm)
     except:

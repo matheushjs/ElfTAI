@@ -7,8 +7,8 @@
 <li>Linux Mint 18 (Should work on every Ubuntu, if not on every Linux)</li>
 </ul>
 
-# Usage
-[Example image of basic usage](example.png)
+# Initial Setup
+* Everything should be fine if the commands below work without throwing any exception.
 ```
 git clone https://github.com/matheushjs/ElfTAI
 chmod +x ElfTAI/elftai
@@ -16,31 +16,38 @@ chmod +x ElfTAI/elftai
 ./ElfTAI/elftai add -t "Hello World!" -a hw
 ./ElfTAI/elftai rm -t hw
 ```
-* If the commands above work, everything should be fine.
-* Make a clone for each directory where you'd like to manage something. In other words, this program can't manage multiple instances of CSV files.
-* You can edit the CSV file 'database.csv' in ElfTAI directory by hand, as long as you acknowledge the format of the CSV file, which is explained below.
-* After executing the commands above, you can use the following ones to bring 'elftai' program to root directory:
+* After cloning, you can use the following commands to bring 'elftai' program to current directory:
 ```
 cp ./ElfTAI/elftai -r ./ElfTAI/modules_elf ./
 ./elftai list
 rm -rf ./ElfTAI
 ```
 
+# Usage
+[Example image of basic usage](example.png)
+
+## Keep in Mind
+* This program can't manage multiple instances of CSV files, so make a clone of elftai for each directory where you'd like to manage something.
+* Feel free to change the name of the program ("elftai") to suit the context of what you're managing.
+* You can edit the CSV file 'database_elftai.csv' in ElfTAI directory by hand, as long as you acknowledge the format of the CSV file, which is explained below.
+
 ## Commands
 The program contains 4 subparsers: 'list', 'add', 'rm' and 'comment', each of which can be called like './elftai list', for example.
+
 ### list
 ```
 ./elftai list
 ```
 Prints a list of all Titles currently in the file.
 ```
-./elftai list [alias/title] [alias/title]
+./elftai list [alias/title]
 ```
-Prints information about each Title given as argument. Only the 5 latest items added to each Title are displayed.
+Prints information about the Title given as argument. Only the 5 latest items added to each Title are displayed.
 ```
-./elftai list [alias/title] [alias/title] -e 10
+./elftai list [alias/title] -e 10
 ```
 Same as above, but prints latest 10 items.
+
 ### add
 ```
 ./elftai add -t [name of new title]
@@ -54,6 +61,7 @@ Adds [new alias] as an alias to the given Title.
 ./elftai add -t [alias/title] -i [new item]
 ```
 Adds the item [new item] to the given Title.
+
 ### rm
 ```
 ./elftai rm -t [name of title]
@@ -67,44 +75,30 @@ Removes the alias [alias] from whatever Title it belongs to.
 ./elftai rm -t [alias/title] -i [item]
 ```
 Removes [item] from the given Title.
+
 ### comment
+Comment also has its subparsers: 'rm' and 'add'.
+
 ```
-./elftai comment -t [alias/title] "[comment]"
+./elftai comment -t [alias/title] add [comment]
 ```
-Sets [comment] as the comment on the given title.
+Adds [comment] to the list of comments of the given Title.
+```
+./elftai comment -t [alias/title] rm [index]
+```
+Removes the comment of index [index] from the given Title.
 
 # Motivation
 <p>Consider the following situation: you have a big set of documents to read, each of which are labeled with the area of knowledge they cover (psychology, mathematics etc). Also, each document has it's ID number.</p>
 <p>The Elf TAI program will try to build a generic command-line manager for such situations, where the following are TRUE:</p>
 <ul>
-<li>There exists a big set of items (documents in this case), and we want to record which of these items have been processed (in this case, read).</li>
-<li>There exists a reduced number of titles (labels, in this case), where each title characterizes a set of items.</li>
-<li>Each item is characterized by only 1 Title.</li>
-<li>Each item can be described by a string (the ID in this case)</li>
+<li>There exists a big set of items; we'd like to keep track of which items have been processed.</li>
+<li>There exists a set of Titles, smaller than the set of items; and each Title characterize a subset of items.</li>
 </ul>
+<p>Elf TAI allows you to manipulate these Titles and items.</p>
+<p>As a bonus, it also allows you to add comments to Titles, which can be any string; useful for adding reminders like "We stopped on page 117", for example.</p>
 
-# Specs
-
-## 1) Overview
-<ul>
-<li>We want to be able to add multiple Titles.</li>
-<li>We want to be able to add Aliases to Titles, which are short synonyms by which we can refer to that Title.</li>
-<li>We want to be able to add a comment to each Title. The comment should be a single string. It should be possible to change the comment.</li>
-<li>We want to be able to add Items to Titles. We also want to be able to do this using their Aliases.</li>
-<li>We want to be able to find which Title contains a certain Item.</li>
-</ul>
-
-## 2) Functionalities
-<ul>
-<li>(Add/Remove) Title</li>
-<li>(Add/Remove) Alias</li>
-<li>(Add/Remove/Change) Comment</li>
-<li>(Add/Remove/Find) Item</li>
-<li>List all Titles</li>
-<li>List items from a given Title</li>
-</ul>
-
-## 3) CSV format
+# CSV format
 <p>[Title],[alias1],[alias2],[alias3],[alias4],[...]</p>
 <p>[Comment1],[Comment2],[...]</p>
 <p>[Item1],[Item2],[Item3],[...]</p>
