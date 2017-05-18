@@ -106,5 +106,5 @@ Sets [comment] as the comment on the given title.
 
 ## 3) CSV format
 <p>[Title],[alias1],[alias2],[alias3],[alias4],[...]</p>
-<p>[Comment]</p>
+<p>[Comment1],[Comment2],[...]</p>
 <p>[Item1],[Item2],[Item3],[...]</p>
