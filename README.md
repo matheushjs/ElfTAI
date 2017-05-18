@@ -78,8 +78,11 @@ Removes the alias [alias] from whatever Title it belongs to.
 Removes [item] from the given Title.
 
 ### comment
-<p>Comment also has its subparsers: 'rm' and 'add'.</p>
-<p>Here, the alias/title should be quoted if it spans multiple tokens.</p>
+
+Comment also has its subparsers: 'rm' and 'add'.
+
+Here, the alias/title should be quoted if it spans multiple tokens.
+
 ```
 ./elftai comment -t [alias/title] add [comment]
 ```
