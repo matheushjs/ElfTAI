@@ -55,13 +55,22 @@ def main():
     else:
         tm.close()
 
+def title_format(string):
+    return tc.colored(string, 'magenta', attrs=['bold'])
+
+def yellow_format(string):
+    return tc.colored(string, 'yellow')
+
+def bold_format(string):
+    return tc.colored(string, attrs=['bold'])
+
 def parse_list(args, tm):
     if len(args.name) != 0:
         for name in args.name:
             if name != args.name[0]: print()
             try: tm.print_full(name.strip(), args.entries)
             except ValueError:
-                print("Could not find Title by name/alias '{}'".format(name.strip()))
+                print("Could not find Title by name/alias '{}'".format(title_format(name.strip())))
     else:
         tm.print_summary()
 
@@ -78,33 +87,48 @@ def parse_add(args, tm):
         return
 
     if args.alias:
-        try: tm.add_node(args.title, args.alias)
-        except ValueError: #Node exists or alias already in node
-            try: tm.add_alias(args.title, args.alias)
-            except ValueError as ve: #Alias already in node
-                print("Alias '{}' is already in some Title".format(args.alias, args.title))
-            else:
-                print("Added alias '{}' to Title identified by '{}'.".format(args.alias, args.title))
+        try: tm.add_node(args.title)
+        except ValueError:
+            pass # Node already exists. Just add alias to it.
         else:
-            print("Created Title '{}', with alias '{}'".format(args.title, args.alias))
+            print("Created Title '{}'".format(title_format(args.title)))
+
+        try: tm.add_alias(args.title, args.alias)
+        except ValueError as ve: #Alias already in node
+            print("Alias '{}' already exists".format(yellow_format(args.alias)))
+        else:
+            print("Added alias '{}' to Title identified by '{}'.".format(
+                yellow_format(args.alias),
+                title_format(args.title))
+            )
 
     elif args.item:
         try: tm.add_node(args.title)
         except ValueError: #Node exists
             try: tm.add_item(args.title, args.item)
             except ValueError: #Item already in Node
-                print("Item already exists in Title identified by '{}'".format(args.item, args.title))
+                print("Item '{}' already exists in Title identified by '{}'".format(
+                        bold_format(args.item),
+                        title_format(args.title))
+                    )
             else:
-                print("Added item '{}' to Title identified by '{}'".format(args.item, args.title))
+                print("Added item '{}' to Title identified by '{}'".format(
+                    bold_format(args.item),
+                    title_format(args.title))
+                )
         else:
             tm.add_item(args.title, args.item)
-            print("Created Title '{}', with item '{}'".format(args.title, args.item))
+            print("Created Title '{}', with item '{}'".format(
+                title_format(args.title),
+                bold_format(args.item))
+            )
     else:
         try: tm.add_node(args.title)
         except ValueError: #Node exists
-            print("Title already exists! Nothing has been done.")
+            print("Title identified by '{}' already exists! Nothing has been done.".format(
+                title_format(args.title)))
         else:
-            print("Created Title '{}'".format(args.title))
+            print("Created Title '{}'".format(title_format(args.title)))
 
 def parse_rm(args, tm):
     if args.alias:
@@ -115,9 +139,9 @@ def parse_rm(args, tm):
 
         try: tm.rm_alias(args.alias)
         except ValueError: #alias not found
-            print("Could not remove alias '{}'. Confirm if it exists.".format(args.alias))
+            print("Could not remove alias '{}'. Confirm if it exists.".format(yellow_format(args.alias)))
         else:
-            print("Removed alias '{}'".format(args.alias))
+            print("Removed alias '{}'".format(yellow_format(args.alias)))
 
     elif args.item:
         if not args.title:
@@ -126,10 +150,16 @@ def parse_rm(args, tm):
 
         try: tm.rm_item(args.title, args.item)
         except ValueError as ve:
-            print("Could not remove item '{}' from Title identified by '{}'.".format(args.item, args.title))
+            print("Could not remove item '{}' from Title identified by '{}'.".format(
+                bold_format(args.item),
+                title_format(args.title))
+            )
             print(ve)
         else:
-            print("Removed item '{}' from Title identified by '{}'".format(args.item, args.title))
+            print("Removed item '{}' from Title identified by '{}'".format(
+                bold_format(args.item),
+                title_format(args.title))
+            )
 
     elif args.title:
         inp = input(tc.colored("Confirm removal of Title identified by '{}' [Y/n]: ".format(args.title), "red", attrs=['bold']))
@@ -153,7 +183,7 @@ def parse_comm_add(args, tm):
     try:
         retval = tm.add_comment(args.title, ' '.join(args.strings))
     except ValueError:
-        print("Could not find Node identified by title '{}'".format(args.title))
+        print("Could not find Node identified by title '{}'".format(title_format(args.title)))
     else:
         print("Added comment '{}'.".format(tc.colored(' '.join(args.strings), 'yellow')))
 
@@ -165,7 +195,7 @@ def parse_comm_rm(args, tm):
     try:
         retval = tm.rm_comment(args.title, args.index[0])
     except ValueError:
-        print("Could not find Node identified by title '{}'".format(args.title))
+        print("Could not find Node identified by title '{}'".format(title_format(args.title)))
     except IndexError:
         print("There is no comment with index '{}'".format(args.index[0]))
     else:

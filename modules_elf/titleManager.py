@@ -60,23 +60,18 @@ class TitleManager:
             for node in self.nodes:
                 TitleManager._print_node_asBlock(node, length)
 
-    def add_node(self, title, aliases=None):
+    def add_node(self, title):
         """Adds a node to the list of Nodes.
         Node will have title 'title'. Make sure to get the case of this string correctly.
-        If 'aliases' is given, either as a single string or a list of them,
-          add them as aliases for the created Node.
         Raises:
-            ValueError - node with same title already existed, so new node wasn't added."""
+            ValueError - Node with same title already existed, so new node wasn't added."""
         node = self._find_node_byName(title)
         if node is not None:
-            raise ValueError # Node with given title already exists
+            raise ValueError
         
         node = TitleNode(title)
         self.nodes.append(node)
         self.nodes.sort()
-        
-        if aliases:
-            self.add_alias(title, aliases)
 
     def rm_node(self, string):
         """Removes the node identified by 'string' from the list of Nodes.
