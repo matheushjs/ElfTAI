@@ -108,7 +108,7 @@ class TitleManager:
             node = self._find_node_byName(alias)
             if not node:
                 raise ValueError
-            node.rm_alias(alias):
+            node.rm_alias(alias)
         else:
             raise TypeError
 
@@ -175,7 +175,8 @@ class TitleManager:
             raise ValueError("Node could not be identified")
         try:
             node.rm_item(item)
-        except ValueError("Node does not have given item.")
+        except ValueError:
+            raise ValueError("Node does not have given item.")
 
     def find_item(self, item):
         """Prints all Nodes that contain item 'item'.
@@ -201,8 +202,9 @@ class TitleManager:
             with open(path) as fp:
                 rd = csv.reader(fp)
                 while True:
-                    node = TitleNode().read_from_csv(rd)
-                    if not node: break #read failed
+                    try:
+                        node = TitleNode().read_from_csv(rd)
+                    except ValueError: break
                     self.nodes.append(node)
         except FileNotFoundError:
             open(path, "w") # May throw another FileNotFoundError, depending on 'path'
@@ -288,11 +290,3 @@ class TitleManager:
             print(tc.colored("Empty", 'white', attrs=['bold', 'dark']))
         else:
             print(tc.colored(', '.join([ str(i) for i in items]), 'white', attrs=['bold', 'dark']))
-
-
-if __name__ == "__main__":
-    with TitleManager("test.csv", "test_out.csv") as tm:
-        tm.print_summary()
-        tm.print_full()
-        tm._print_node_asBlock(tm._find_node_byName("math"))
-        print(tm.add_node("Information", ["info", "inf"]))
