@@ -30,6 +30,7 @@ rm -rf ./ElfTAI
 * This program can't manage multiple instances of CSV files, so make a clone of elftai for each directory where you'd like to manage something.
 * Feel free to change the name of the program ("elftai") to suit the context of what you're managing.
 * You can edit the CSV file 'database_elftai.csv' in ElfTAI directory by hand, as long as you acknowledge the format of the CSV file, which is explained below.
+* The program will try to figure out when multiple tokens given by command-line should be concatenated into 1 string. This is not always possible, though; so if something goes wrong, quote the arguments.
 
 ## Commands
 The program contains 4 subparsers: 'list', 'add', 'rm' and 'comment', each of which can be called like './elftai list', for example.
@@ -77,8 +78,8 @@ Removes the alias [alias] from whatever Title it belongs to.
 Removes [item] from the given Title.
 
 ### comment
-Comment also has its subparsers: 'rm' and 'add'.
-
+<p>Comment also has its subparsers: 'rm' and 'add'.</p>
+<p>Here, the alias/title should be quoted if it spans multiple tokens.</p>
 ```
 ./elftai comment -t [alias/title] add [comment]
 ```
