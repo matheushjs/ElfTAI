@@ -3,10 +3,7 @@ import csv
 from .namedEntity import NamedEntity
 from .comment import Comment
 
-# Lowercasing should be done in this class, when it is essential (adding aliases, comparison functions)
-# Any other String treatment is up to the user
-
-class TitleNode (NamedEntity):
+class TitleNode(NamedEntity):
     """This class will represent a single Title, and handle Title-specific queries.
     
     Each Title contains:
@@ -15,7 +12,15 @@ class TitleNode (NamedEntity):
         3) Items
         
     No string treatment is done in this class.
-    String comparisons are done case-insentively, though."""
+    String comparisons are done case-insentively, though.
+    
+    Exceptions:
+        TypeError - When any argument received has invalid type.
+                    Most arguments are expected to be strings.
+                    Even list of strings are type-checked.
+        ValueError - When a value given as argument is ignored for any reason,
+                     forcing the function not to do what its name suggests.
+                     Happens when trying to add an alias that already exists, for example."""
 
     def __init__(self, title="Null"):
         super(TitleNode, self).__init__(title)
@@ -43,36 +48,32 @@ class TitleNode (NamedEntity):
     def add_item(self, item):
         """Adds a unique item to this Node.
         Comparisons between strings are not case-sensitive.
-        Returns
-            False if item already existed
-            True otherwise."""
+        Raises:
+            ValueError - Item already existed"""
         if not isinstance(item, str):
             raise TypeError
         if self.has_item(item) >= 0:
-            return False
-        else:
-            self.items.append(item)
-            return True
+            raise ValueError
+        self.items.append(item)
 
     def rm_item(self, item):
         """Removes an item from this Node.
         Searching for 'item' is done case-insensitively.
-        Returns True if item existed and was removed"""
+        Raise:
+            ValueError - Item does not exist within this node, thus could not be removed."""
         if not isinstance(item, str):
             raise TypeError
         idx = self.has_item(item)
         if idx < 0:
-            return False
-        else:
-            self.items.pop(idx)
-            return True
+            raise ValueError
+        self.items.pop(idx)
 
     def get_items(self, howmany=-1):
         """Returns a list with the last 'howmany' items added to this Node.
         If 'howmany' is negative, returns all items.
         If 'howmany' is higher than the number of items, returns all of them."""
         if howmany < 0:
-            return self.items
+            return [i for i in self.items]
         else:
             return [i for i in self.items[-howmany:]]
 
@@ -82,13 +83,21 @@ class TitleNode (NamedEntity):
             [title],[alias1],[alias2],...
             [comment1],[comment2],[comment3],...
             [item1],[item2],..."""
+        if not isinstance(writer, csv.writer):
+            raise TypeError
+
         title_row = [self.get_title(),]
         title_row.extend(self.get_alias())
         writer.writerows([title_row, self.comment.get_list(), self.items])
 
     def read_from_csv(self, reader):
         """Reads a Node from a csv file, overwriting the current Node instance.
-        Returns self if reading was successful. None if end-of-file was reached"""
+        Returns self. 
+        Raises:
+            ValueError - if node could not be read from 'reader'."""
+        if not isinstance(reader, csv.reader):
+            raise TypeError
+
         try:
             l = next(reader)
             self.set_title(l[0])
@@ -103,4 +112,4 @@ class TitleNode (NamedEntity):
             self.items = [i for i in l]
             return self
         except StopIteration:
-            return None
+            raise ValueError
