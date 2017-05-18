@@ -9,7 +9,16 @@ class TitleManager:
     """Class that will manage a list of TitleNodes. Basically is supposed to do:
         1) Read a csv file, loading all Nodes in memory.
         2) Apply operations upon the list of Nodes.
-        3) Saves the processed list of Nodes in a csv file."""
+        3) Saves the processed list of Nodes in a csv file.
+
+    Exceptions:
+        TypeError - When any argument received has invalid type.
+                    Most arguments are expected to be strings.
+                    Even list of strings are type-checked.
+        ValueError - When a value given as argument is ignored for any reason,
+                     forcing the function not to do what its name suggests.
+                     Happens when trying to add an alias that already exists, for example.
+        IndexError - When trying to access an element not in the list in question."""
     
     def __init__(self, filename, bkfile=None):
         # nodes: list of existent nodes
@@ -20,13 +29,9 @@ class TitleManager:
         self.bkfile = bkfile
         self.read_from_csv(filename)
 
-    def __enter__(self):
-        # For use in 'with' statements
-        return self
-
     def close(self):
-        """If this TitleManager was given a name for a backup file upon instantiation, \
-transfer contents of the old Nodes csv file to this backup.
+        """If this TitleManager was given a name for a backup file upon instantiation,
+          transfer contents of the old Nodes csv file to this backup.
         Then saves all nodes in the Nodes csv file, overwriting it."""
         if self.bkfile:
             self.write_to_csv(self.filename, self.bkfile)
@@ -44,30 +49,27 @@ transfer contents of the old Nodes csv file to this backup.
         If 'string' is given, prints full information about only the node identified by it.
         If 'string is NOT given, prints information for all nodes.
         If 'length' is given, prints only the latest 'length' items added to the Title.
-        Returns:
-            False, if a string is given, and the node cannot be found.
-            True, otherwise."""
+        Raises:
+            ValueError - 'string' is given, but the node cannot be found."""
         if string is not None:
             node = self._find_node_byName(string)
             if not node:
-                return False
+                raise ValueError
             TitleManager._print_node_asBlock(node, length)
         else:
             for node in self.nodes:
                 TitleManager._print_node_asBlock(node, length)
-        return True
 
     def add_node(self, title, aliases=None):
         """Adds a node to the list of Nodes.
         Node will have title 'title'. Make sure to get the case of this string correctly.
-        If 'aliases' is given, either as a single string or a list of them, \
-add them as aliases for the created Node.
-        Return:
-            True if node has been added.
-            False if a node with same title already existed, so new node wasn't added."""
+        If 'aliases' is given, either as a single string or a list of them,
+          add them as aliases for the created Node.
+        Raises:
+            ValueError - node with same title already existed, so new node wasn't added."""
         node = self._find_node_byName(title)
         if node is not None:
-            return False # Node with given title already exists
+            raise ValueError # Node with given title already exists
         
         node = TitleNode(title)
         self.nodes.append(node)
@@ -75,70 +77,48 @@ add them as aliases for the created Node.
         
         if aliases:
             self.add_alias(title, aliases)
-        return True
 
     def rm_node(self, string):
         """Removes the node identified by 'string' from the list of Nodes.
         String comparison is made case-insensitively here.
-        Return:
-            True if node has been removed.
-            False if node didn't exist anyway."""
+        Raise:
+            ValueError - node didn't exist anyway."""
         node = self._find_node_byName(string)
-
-        try:
-            self.nodes.remove(node)
-        except:
-            return False
-        return True
+        self.nodes.remove(node)
 
     def add_alias(self, string, alias):
-        """Adds aliases to node identified by 'string'.
-        'alias' can be either a string or a list of strings.
+        """Adds alias to node identified by 'string'.
         Node searching is made case-insensitively.
-        Return:
-            False if node wasn't found.
-            True if node was found and aliases were added."""
+        Raise:
+            ValueError - Node wasn't found. Or some node already has the given alias.
+                         Exception raised with due explanation message."""
+        if self._find_node_byName(alias):
+            raise ValueError("Node with given alias already exists.")
+
         node = self._find_node_byName(string)
         if not node:
-            return False
-
-        if isinstance(alias, list):
-            for i in alias:
-                node.add_alias(i)
-        elif isinstance(alias, str):
-            node.add_alias(alias)
-        else:
-            raise TypeError
-        return True
+            raise ValueError("Could not identify node.")
+        node.add_alias(alias)
 
     def rm_alias(self, alias):
-        """Removes aliases from the list of nodes.
-        'alias' can be either a string or a list of strings.
-        For each alias, find the node identified by that alias, then remove the alias from it.
-        Return:
-            list of aliases that could not be removed"""
-        error = []
-        if isinstance(alias, list):
-            for i in alias:
-                node = self._find_node_byName(i)
-                if not node or not node.rm_alias(i):
-                    error.append(i)
-        elif isinstance(alias, str):
+        """Removes alias from the list of nodes.
+        Raise:
+            ValueError - Node with given alias has not been found."""
+        if isinstance(alias, str):
             node = self._find_node_byName(alias)
-            if not node or not node.rm_alias(alias):
-                error.append(alias)
+            if not node:
+                raise ValueError
+            node.rm_alias(alias):
         else:
             raise TypeError
-        return error
 
     def set_comment(self, string, n, comm):
         """Replaces the n-th comment of node identified by 'string'.
         returns:
             The comment string that has been replaced
-        raises:
+        Raise:
             ValueError if node could not be identified
-            IndexError if comment of given index does not exist
-            TypeError if type of arguments are wrong"""
+            IndexError if comment of given index does not exist"""
         node = self._find_node_byName(string)
         if not node:
             raise ValueError
@@ -151,63 +131,58 @@ add them as aliases for the created Node.
     def add_comment(self, string, comm):
         """Adds a comment to node identified by 'string'.
         Returns False if node doesn't exist.
-        raises:
+        Raise:
             ValueError if node could not be identified
-            IndexError if comment of given index does not exist
-            TypeError if type of arguments are wrong"""
+            IndexError if comment of given index does not exist"""
         node = self._find_node_byName(string)
         if not node:
             raise ValueError
-
         comment = node.get_comment()
         comment.add(comm)
 
     def rm_comment(self, string, idx):
         """Removes the idx-th comment of the node identified by 'string'
         Returns the removed comment.
-        raises:
+        Raises:
             ValueError if node could not be identified
-            IndexError if comment of given index does not exist
-            TypeError if type of arguments are wrong"""
+            IndexError if comment of given index does not exist"""
         node = self._find_node_byName(string)
         if not node:
             raise ValueError
-        
         return node.rm_comment(idx)
 
     def add_item(self, string, item):
         """Adds a unique item 'item' to the node identified by 'string'.
         Note that items are unique to a single node, but can appear in more than 1 node at a time.
-        Returns:
-            False, if node couldn't be found or the item already existed in the node found.
-            True, otherwise"""
+        Raise:
+            ValueError - Node couldn't be found or the item already existed in the node found.
+                         Raised with due explanation message."""
         node = self._find_node_byName(string)
         if not node:
-            return False
-        if node.add_item(item):
-            return True
-        else:
-            return False
+            raise ValueError("Node could not be identified")
+        try:
+            node.add_item(item)
+        except ValueError:
+            raise ValueError("Item already exists in the node.")
 
     def rm_item(self, string, item):
         """Removes the item 'item' from the node identified by 'string'.
-        Returns:
-            False, if node couldn't be found, or the identified node didn't have that item.
-            True, otherwise"""
+        Raise:
+            ValueError - Node could not be found, or the identified node didn't have that item.
+                         Raised with due explanation message"""
         node = self._find_node_byName(string)
         if not node:
-            return False
-        if node.rm_item(item):
-            return True
-        else:
-            return False
+            raise ValueError("Node could not be identified")
+        try:
+            node.rm_item(item)
+        except ValueError("Node does not have given item.")
 
     def find_item(self, item):
         """Prints all Nodes that contain item 'item'.
         Should no node contain that item, prints an adequate message."""
         lnodes = []
         for node in self.nodes:
-            if node.has_item(item) != -1:
+            if node.has_item(item) >= 0:
                 lnodes.append(node)
 
         if len(lnodes) == 0:
@@ -229,9 +204,8 @@ add them as aliases for the created Node.
                     node = TitleNode().read_from_csv(rd)
                     if not node: break #read failed
                     self.nodes.append(node)
-        except:
-            with open(path, "w") as fp:
-                pass
+        except FileNotFoundError:
+            open(path, "w") # May throw another FileNotFoundError, depending on 'path'
 
     def write_to_csv(self, path, bkpath=None):
         """Writes all TitleNodes to the csv file.
@@ -239,20 +213,34 @@ add them as aliases for the created Node.
         if not isinstance(path, str):
             raise TypeError
 
-        # Saves a backup before overwriting the main file.
-        if bkpath:
-            with open(path, 'r') as infile, open(bkpath, 'w') as outfile:
-                outfile.write(infile.read())
+        # Overwrite original file. Nothing should go wrong, so extra caution is taken.
+        try:
+            with open(path, 'r') as fp:
+                safebuf = fp.read()
+        except:
+            safebuf = None
 
-        with open(path, 'w') as fp:
-            wr = csv.writer(fp)
-            for node in self.nodes:
-                node.write_to_csv(wr)
+        try:
+            with open(path, 'w') as fp:
+                wr = csv.writer(fp)
+                for node in self.nodes:
+                    node.write_to_csv(wr)
+        except:
+            print("FATAL: Exception upon overwriting original CSV file. Attempting to undo overwriting.")
+            if safebuf:
+                with open(path, 'w') as fp:
+                    fp.write(savebuf)
+
+        # Saves the backup
+        if bkpath and safebuf:
+            with open(bkpath, 'w') as outfile:
+                outfile.write(safebuf)
 
     def _find_node_byName(self, string):
         """Given a string, attemps to find the node with alias or title
-        that is equivalent to the string. Comparison made case-insensitive and
-        ignoring blank characters"""
+        that is equivalent to the string.
+        Comparison is done case-insensitive and ignoring blank characters.
+        Returns None if no node was found"""
         string = string.strip().lower()
         for node in self.nodes:
             l = []
