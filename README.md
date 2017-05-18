@@ -56,7 +56,7 @@ Creates a new Title with the name given.
 ```
 ./elftai add -t [alias/title] -a [new alias]
 ```
-Adds [new alias] as an alias to the given Title.
+Adds [new alias] as an alias to the given Title. Title is created if doesn't exist.
 ```
 ./elftai add -t [alias/title] -i [new item]
 ```
