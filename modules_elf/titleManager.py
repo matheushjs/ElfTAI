@@ -149,7 +149,7 @@ class TitleManager:
         node = self._find_node_byName(string)
         if not node:
             raise ValueError
-        return node.rm_comment(idx)
+        return node.get_comment().rm(idx)
 
     def add_item(self, string, item):
         """Adds a unique item 'item' to the node identified by 'string'.

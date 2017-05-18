@@ -33,8 +33,15 @@ def main():
 
     comm_parser = subp.add_parser('comment', help='Change comment associated to a Title')
     comm_parser.add_argument('-t', '--title', type=str, help="Title of which to change comment")
-    comm_parser.add_argument('string', nargs=1, type=str, help="Comment to associate to the Title")
-    comm_parser.set_defaults(func=parse_comm)
+    comm_subp = comm_parser.add_subparsers()
+    
+    comm_add = comm_subp.add_parser("add", help="Add a comment")
+    comm_add.add_argument('strings', nargs='+', help="Comment to add")
+    comm_add.set_defaults(func=parse_comm_add)
+
+    comm_rm = comm_subp.add_parser("rm", help="Remove the N-th comment")
+    comm_rm.add_argument('index', nargs=1, type=int, help="Index of comment to remove")
+    comm_rm.set_defaults(func=parse_comm_rm)
 
     # TODO: operation 'name' for editing Title's title
     # TODO: operation 'comment' for editing/appending/adding comments
@@ -138,19 +145,31 @@ def parse_rm(args, tm):
     else:
         print("Please, provide one of the following:\n1) A title with -t\n2) An alias with -a\n3) An item with -i and a title/alias with -t")
 
-def parse_comm(args, tm):
+def parse_comm_add(args, tm):
     if not args.title:
-        print("You must provide a title using argument directive -t")
+        print("You must provide a title. e.g. ./elftai comment -t 'TITLE' add ...")
         return
     
     try:
-        retval = tm.set_comment(args.title, 0, args.string[0])
+        retval = tm.add_comment(args.title, ' '.join(args.strings))
+    except ValueError:
+        print("Could not find Node identified by title '{}'".format(args.title))
+    else:
+        print("Added comment '{}'.".format(tc.colored(' '.join(args.strings), 'yellow')))
+
+def parse_comm_rm(args, tm):
+    if not args.title:
+        print("You must provide a title. e.g. ./elftai comment -t 'TITLE' add ...")
+        return
+
+    try:
+        retval = tm.rm_comment(args.title, args.index[0])
     except ValueError:
         print("Could not find Node identified by title '{}'".format(args.title))
     except IndexError:
-        print("Comment of given index does not exist")
+        print("There is no comment with index '{}'".format(args.index[0]))
     else:
-        print("Replaced old comment '{}'".format(retval))
+        print("Removed comment '{}'".format(tc.colored(retval, 'yellow')))
 
 if __name__=='__main__':
     main()
