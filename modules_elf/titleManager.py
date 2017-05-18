@@ -282,6 +282,6 @@ class TitleManager:
             print(tc.colored("Empty", 'yellow'))
 
         if len(items) == 0:
-            print(tc.colored("Empty", 'white', attrs=['bold', 'dark']))
+            print(tc.colored("Empty", attrs=['bold']))
         else:
-            print(tc.colored(', '.join([ str(i) for i in items]), 'white', attrs=['bold', 'dark']))
+            print(tc.colored(', '.join([ str(i) for i in items]), attrs=['bold']))
