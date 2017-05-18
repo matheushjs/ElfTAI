@@ -4,6 +4,14 @@ class NamedEntity:
 
     1) Title - Proper name of the entity
     2) Aliases - Short names by which the entity can be referred to.
+
+    Exceptions:
+        TypeError - When any argument received has invalid type.
+                    Most arguments are expected to be strings.
+                    Even list of strings are type-checked.
+        ValueError - When a value given as argument is ignored for any reason,
+                     forcing the function not to do what its name suggests.
+                     Happens when trying to add an alias that already exists, for example.
     """
 
     def __init__(self, title="Null"):
@@ -43,25 +51,24 @@ class NamedEntity:
     def add_alias(self, alias):
         """Adds given 'alias' as an alias to this Node.
         'alias' is converted to lowercase before adding.
-        Returns False if it already existed."""
+        Raises:
+            ValueError if alias already existed."""
         if not isinstance(alias, str):
             raise TypeError
         if self.has_alias(alias):
-            return False
+            raise ValueError
         self.alias.add(alias.lower())
-        return True
 
     def rm_alias(self, alias):
         """Removes given 'alias' from this Node.
         Alias is converted to lowercase before searching for it.
-        Returns True if it existed and was successfully removed"""
+        Raises:
+            ValueError if alias does not exist."""
         if not isinstance(alias, str):
             raise TypeError
         if not self.has_alias(alias):
-            return False
-        else:
-            self.alias.remove(alias.lower())
-            return True
+            raise ValueError
+        self.alias.remove(alias.lower())
 
     def get_alias(self):
         """Returns a list with all aliases of this Node.
