@@ -12,27 +12,27 @@ def main():
     
     list_parser = subp.add_parser('list', help='List information about one or all Titles')
     list_parser.add_argument('-e', '--entries', nargs='?', default=5, type=int, help='Number of latest items to print')
-    list_parser.add_argument('name', nargs="*", help='Titles about which to print specific information. If none is given, print summary about all Titles.')
+    list_parser.add_argument('title', nargs="*", type=str, help='Title about which to print specific information. If not given, print summary about all Titles.')
     list_parser.set_defaults(func=parse_list)
 
     find_parser = subp.add_parser('find', aliases=['search'], help='Display Titles that contain the given item')
-    find_parser.add_argument('item', nargs=1, help='IDs to find')
+    find_parser.add_argument('item', nargs='+', type=str, help='Item to find')
     find_parser.set_defaults(func=parse_find)
 
     add_parser = subp.add_parser('add', help='Add a Title, alias or item')
-    add_parser.add_argument('-t', '--title', type=str, help="Title to create or to which add the given alias/item")
-    add_parser.add_argument('-a', '--alias', type=str, help="Alias to add to the given Title")
-    add_parser.add_argument('-i', '--item', type=str, help="Item to add to the given Title")
+    add_parser.add_argument('-t', '--title', nargs='+', type=str, help="Title to create or to which add the given alias/item")
+    add_parser.add_argument('-a', '--alias', nargs='+', type=str, help="Alias to add to the given Title")
+    add_parser.add_argument('-i', '--item', nargs='+', type=str, help="Item to add to the given Title")
     add_parser.set_defaults(func=parse_add)
 
     rm_parser = subp.add_parser('rm', help='Remove a Title, alias or item')
-    rm_parser.add_argument('-t', '--title', type=str, help="Title to remove")
-    rm_parser.add_argument('-a', '--alias', type=str, help="Alias to remove")
-    rm_parser.add_argument('-i', '--item', type=str, help="Item to remove")
+    rm_parser.add_argument('-t', '--title', nargs='+', type=str, help="Title to remove")
+    rm_parser.add_argument('-a', '--alias', nargs='+', type=str, help="Alias to remove")
+    rm_parser.add_argument('-i', '--item', nargs='+', type=str, help="Item to remove")
     rm_parser.set_defaults(func=parse_rm)
 
     comm_parser = subp.add_parser('comment', help='Change comment associated to a Title')
-    comm_parser.add_argument('-t', '--title', type=str, help="Title of which to change comment")
+    comm_parser.add_argument('-t', '--title', nargs='+', type=str, help="Title of which to change comment")
     comm_subp = comm_parser.add_subparsers()
     
     comm_add = comm_subp.add_parser("add", help="Add a comment")
@@ -62,19 +62,26 @@ def bold_format(string):
     return tc.colored(string, attrs=['bold'])
 
 def parse_list(args, tm):
-    if len(args.name) != 0:
-        for name in args.name:
-            if name != args.name[0]: print()
-            try: tm.print_full(name.strip(), args.entries)
-            except ValueError:
-                print("Could not find Title by name/alias '{}'".format(title_format(name.strip())))
+    if args.title: args.title = ' '.join(args.title)
+
+    if args.title:
+        try: tm.print_full(args.title, args.entries)
+        except ValueError:
+            print("Could not find Title identified by '{}'".format(title_format(args.title)))
     else:
         tm.print_summary()
 
 def parse_find(args, tm):
-    tm.find_item(args.item[0])
+    if args.item: args.item = ' '.join(args.item)
+    retval = tm.find_item(args.item)
+    if not retval:
+        print("No Titles contain item '{}'.".format(bold_format(args.item)))
 
 def parse_add(args, tm):
+    if args.title: args.title = ' '.join(args.title)
+    if args.alias: args.alias = ' '.join(args.alias)
+    if args.item: args.item = ' '.join(args.item)
+    
     if not args.title:
         print("You need to specify a Title upon which to operate. Use the -t directive.")
         return
@@ -128,6 +135,10 @@ def parse_add(args, tm):
             print("Created Title '{}'".format(title_format(args.title)))
 
 def parse_rm(args, tm):
+    if args.title: args.title = ' '.join(args.title)
+    if args.alias: args.alias = ' '.join(args.alias)
+    if args.item: args.item = ' '.join(args.item)
+
     if args.alias:
         if args.item:
             print("Ignoring the given item. Delete it on a separate execution, please.")
@@ -173,6 +184,8 @@ def parse_rm(args, tm):
         print("Please, provide one of the following:\n1) A title with -t\n2) An alias with -a\n3) An item with -i and a title/alias with -t")
 
 def parse_comm_add(args, tm):
+    if args.title: args.title = ' '.join(args.title)
+    
     if not args.title:
         print("You must provide a title. e.g. ./elftai comment -t 'TITLE' add ...")
         return
@@ -185,6 +198,8 @@ def parse_comm_add(args, tm):
         print("Added comment '{}'.".format(tc.colored(' '.join(args.strings), 'yellow')))
 
 def parse_comm_rm(args, tm):
+    if args.title: args.title = ' '.join(args.title)
+
     if not args.title:
         print("You must provide a title. e.g. ./elftai comment -t 'TITLE' add ...")
         return

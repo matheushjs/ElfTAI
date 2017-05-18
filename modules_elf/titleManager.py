@@ -175,18 +175,18 @@ class TitleManager:
 
     def find_item(self, item):
         """Prints all Nodes that contain item 'item'.
-        Should no node contain that item, prints an adequate message."""
+        Return:
+            List with all TitleNode containing the given item."""
         lnodes = []
         for node in self.nodes:
             if node.has_item(item) >= 0:
                 lnodes.append(node)
 
-        if len(lnodes) == 0:
-            print("No Nodes contain item '{}'.".format(item))
-        else:
+        if len(lnodes) != 0:
             print("Items that contain item '{}':".format(item))
             for node in lnodes:
                 TitleManager._print_node_asLine(node)
+        return lnodes
 
     def read_from_csv(self, path):
         """Reads all TitleNodes on a csv file, and store them internally."""
