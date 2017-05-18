@@ -52,8 +52,8 @@ def parse_list(args, tm):
     if len(args.name) != 0:
         for name in args.name:
             if name != args.name[0]: print()
-            ok = tm.print_full(name.strip(), args.entries)
-            if not ok:
+            try: tm.print_full(name.strip(), args.entries)
+            except ValueError:
                 print("Could not find Title by name/alias '{}'".format(name.strip()))
     else:
         tm.print_summary()
@@ -71,30 +71,33 @@ def parse_add(args, tm):
         return
 
     if args.alias:
-        retval = tm.add_node(args.title, args.alias)
-        if retval is True:
-            print("Created Title '{}', with alias '{}'".format(args.title, args.alias))
+        try: tm.add_node(args.title, args.alias)
+        except ValueError: #Node exists or alias already in node
+            try: tm.add_alias(args.title, args.alias)
+            except ValueError as ve: #Alias already in node
+                print("Alias '{}' is already in some Title".format(args.alias, args.title))
+            else:
+                print("Added alias '{}' to Title identified by '{}'.".format(args.alias, args.title))
         else:
-            tm.add_alias(args.title, args.alias)
-            print("Added alias '{}' to Title identified by '{}'.".format(args.alias, args.title))
+            print("Created Title '{}', with alias '{}'".format(args.title, args.alias))
 
     elif args.item:
-        retval = tm.add_node(args.title)
-        if retval is True:
+        try: tm.add_node(args.title)
+        except ValueError: #Node exists
+            try: tm.add_item(args.title, args.item)
+            except ValueError: #Item already in Node
+                print("Item already exists in Title identified by '{}'".format(args.item, args.title))
+            else:
+                print("Added item '{}' to Title identified by '{}'".format(args.item, args.title))
+        else:
             tm.add_item(args.title, args.item)
             print("Created Title '{}', with item '{}'".format(args.title, args.item))
-        else:
-            retval = tm.add_item(args.title, args.item)
-            if retval is True:
-                print("Added item '{}' to Title identified by '{}'".format(args.item, args.title))
-            else:
-                print("Item already exists in Title identified by '{}'".format(args.item, args.title))
     else:
-        retval = tm.add_node(args.title)
-        if retval is True:
-            print("Created Title '{}'".format(args.title))
-        else:
+        try: tm.add_node(args.title)
+        except ValueError: #Node exists
             print("Title already exists! Nothing has been done.")
+        else:
+            print("Created Title '{}'".format(args.title))
 
 def parse_rm(args, tm):
     if args.alias:
@@ -103,8 +106,8 @@ def parse_rm(args, tm):
         if args.title:
             print("Title is not needed when deleting an alias, hence will be ignored.")
 
-        retval = tm.rm_alias(args.alias)
-        if len(retval) != 0:
+        try: tm.rm_alias(args.alias)
+        except ValueError: #alias not found
             print("Could not remove alias '{}'. Confirm if it exists.".format(args.alias))
         else:
             print("Removed alias '{}'".format(args.alias))
@@ -114,22 +117,21 @@ def parse_rm(args, tm):
             print("Items can only be removed from a single Title. Specify a Title with -t")
             return
 
-        retval = tm.rm_item(args.title, args.item)
-        if retval is True:
-            print("Removed item '{}' from Title identified by '{}'".format(args.item, args.title))
-        else:
-            #TODO: Add a function to check if the node exists or not. Can be done using EXCEPTIONS.
+        try: tm.rm_item(args.title, args.item)
+        except ValueError as ve:
             print("Could not remove item '{}' from Title identified by '{}'.".format(args.item, args.title))
-            print("Either the Title doesn't exist, or the Title found doesn't have the given item.")
+            print(ve)
+        else:
+            print("Removed item '{}' from Title identified by '{}'".format(args.item, args.title))
 
     elif args.title:
         inp = input(tc.colored("Confirm removal of Title identified by '{}' [Y/n]: ".format(args.title), "red", attrs=['bold']))
         if inp.lower().strip() == 'y':
-            retval = tm.rm_node(args.title)
-            if retval is True:
-                print("Removed")
-            else:
+            try: tm.rm_node(args.title)
+            except ValueError:
                 print("Title doesn't exist. Nothing has been done.")
+            else:
+                print("Removed")
         else:
             print("Canceled")
 
@@ -146,7 +148,7 @@ def parse_comm(args, tm):
     except ValueError:
         print("Could not find Node identified by title '{}'".format(args.title))
     except IndexError:
-        print("Comment of that index does not exist")
+        print("Comment of given index does not exist")
     else:
         print("Replaced old comment '{}'".format(retval))
 
