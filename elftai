@@ -50,7 +50,7 @@ def main():
     rm_parser.set_defaults(func=parse_rm)
 
     comm_parser = subp.add_parser('comment', help='Change comment associated to a Title')
-    comm_parser.add_argument('-t', '--title', nargs='+', type=str, help="Title of which to change comment")
+    comm_parser.add_argument('-t', '--title', nargs=1, type=str, help="Title of which to change comment")
     comm_subp = comm_parser.add_subparsers()
     
     comm_add = comm_subp.add_parser("add", help="Add a comment")
@@ -67,7 +67,6 @@ def main():
         args.func(args, tm)
     except:
         print("Wrong command line operation. Try running '{} -h'".format(sys.argv[0]))
-        raise
     else:
         tm.close()
 
