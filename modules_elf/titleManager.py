@@ -174,18 +174,14 @@ class TitleManager:
             raise ValueError("Node does not have given item.")
 
     def find_item(self, item):
-        """Prints all Nodes that contain item 'item'.
+        """Returns all Nodes that contain item 'item'.
         Return:
             List with all TitleNode containing the given item."""
         lnodes = []
         for node in self.nodes:
             if node.has_item(item) >= 0:
                 lnodes.append(node)
-
-        if len(lnodes) != 0:
-            print("Items that contain item '{}':".format(item))
-            for node in lnodes:
-                node.print_line()
+        
         return lnodes
 
     def read_from_csv(self, path):
