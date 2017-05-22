@@ -67,7 +67,7 @@ def main():
     comm_rm.set_defaults(func=parse_comm_rm)
 
     args = parser.parse_args()
-    tm = TitleManager(path.join(sys.path[0], _csv_filename), path.join(sys.path[0], 'backup_elftai.csv'))
+    tm = TitleManager(path.join(sys.path[0], _csv_filename), path.join(sys.path[0], _backup_filename))
     try:
         args.func(args, tm)
     except:
